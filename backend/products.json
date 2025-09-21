@@ -1,0 +1,68 @@
+[
+  {
+    "id": "p1",
+    "title": "Deshi Girl - Layered Net Mesh Fitted Top",
+    "brand": "Deshi Girl",
+    "price": 552,
+    "mrp": 2899,
+    "discountText": "Rs. 2347 OFF",
+    "rating": 4.8,
+    "ratingCount": 22,
+    "image": "/images/deshi1.png"
+  },
+  {
+    "id": "p2",
+    "title": "Tokyo Talkies - Self Design Shirt Style Top",
+    "brand": "Tokyo Talkies",
+    "price": 241,
+    "mrp": 1149,
+    "discountText": "79% OFF",
+    "rating": 4.2,
+    "ratingCount": 527,
+    "image": "/images/tokyo1.png"
+  },
+  {
+    "id": "p3",
+    "title": "Corsica - Indie Floral Printed Vest",
+    "brand": "CORSICA",
+    "price": 278,
+    "mrp": 1399,
+    "discountText": "80% OFF",
+    "rating": 4.3,
+    "ratingCount": 5600,
+    "image": "/images/corsica1.png"
+  },
+  {
+    "id": "p4",
+    "title": "Fithub - Cuban Collar Shirt Style Top",
+    "brand": "FITHUB",
+    "price": 646,
+    "mrp": 1999,
+    "discountText": "Rs. 1353 OFF",
+    "rating": 4.5,
+    "ratingCount": 2100,
+    "image": "/images/fithub1.png"
+  },
+  {
+    "id": "p5",
+    "title": "Example Top Pink - Lightweight",
+    "brand": "BrandX",
+    "price": 799,
+    "mrp": 1499,
+    "discountText": "46% OFF",
+    "rating": 4.1,
+    "ratingCount": 430,
+    "image": "/images/pink1.png"
+  },
+  {
+    "id": "p6",
+    "title": "Example Top Beige - Casual Fit",
+    "brand": "BrandY",
+    "price": 699,
+    "mrp": 1299,
+    "discountText": "46% OFF",
+    "rating": 4.0,
+    "ratingCount": 120,
+    "image": "/images/beige1.png"
+  }
+]
