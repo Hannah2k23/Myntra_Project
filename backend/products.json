@@ -64,5 +64,15 @@
     "rating": 4.0,
     "ratingCount": 120,
     "image": "/images/beige1.png"
+  }, {
+    "id": "p7",
+    "title": "Example Red Tshirt - Lightweight",
+    "brand": "BrandX",
+    "price": 799,
+    "mrp": 1499,
+    "discountText": "46% OFF",
+    "rating": 4.1,
+    "ratingCount": 430,
+    "image": "/images/red1.png"
   }
 ]
