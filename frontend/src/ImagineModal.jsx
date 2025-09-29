@@ -1,457 +1,645 @@
-// frontend/src/ImagineModal.jsx
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 
 export default function ImagineModal({ productImage, onClose }){
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
-  const [userImg, setUserImg] = useState(null) // dataURL of person photo
-  const [imageSource, setImageSource] = useState(null) // Track source: 'camera' or 'upload'
+  const [userImg, setUserImg] = useState(null)
+  const [imageSource, setImageSource] = useState(null)
   const [streaming, setStreaming] = useState(false)
   const [loading, setLoading] = useState(false)
   const [resultImage, setResultImage] = useState(null)
 
-  // Target dimensions for consistent output
+  // Consistent dimensions - portrait orientation like Myntra
   const TARGET_WIDTH = 512
   const TARGET_HEIGHT = 768
 
+  useEffect(() => {
+    // cleanup on unmount: stop camera
+    return () => {
+      stopCamera()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   async function startCamera(){
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      alert('Camera API not supported in this browser')
+      return
+    }
+
     try {
-      const s = await navigator.mediaDevices.getUserMedia({ video: true })
-      videoRef.current.srcObject = s
-      await videoRef.current.play()
-      setStreaming(true)
+      const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+
+      // Ensure video element is mounted (we always render it, so this should be instant)
+      if (!videoRef.current) {
+        // unlikely because video is always rendered, but guard anyway
+        setStreaming(true)
+        // small wait loop (shouldn't be needed)
+        await new Promise(resolve => setTimeout(resolve, 50))
+      } else {
+        setStreaming(true)
+      }
+
+      // Attach stream and play
+      if (videoRef.current) {
+        videoRef.current.srcObject = s
+        // play may reject if autoplay blocked, ignore the rejection
+        try { await videoRef.current.play() } catch(e) { /* autoplay blocked — user will need interaction */ }
+        setStreaming(true)
+      } else {
+        // fallback: stop tracks if we couldn't attach
+        s.getTracks().forEach(t => t.stop())
+        throw new Error('Video element not available')
+      }
     } catch(e){
-      alert('Camera error: ' + e.message)
+      console.error('startCamera error', e)
+      alert('Camera access denied: ' + (e && e.message ? e.message : e))
     }
   }
 
   function stopCamera(){
-    if(videoRef.current && videoRef.current.srcObject){
-      videoRef.current.srcObject.getTracks().forEach(t=>t.stop())
+    try {
+      const vid = videoRef.current
+      if (vid?.srcObject) {
+        const stream = vid.srcObject
+        // stop all tracks
+        if (typeof stream.getTracks === 'function') {
+          stream.getTracks().forEach(t => t.stop())
+        }
+        // clear reference
+        vid.srcObject = null
+      }
+    } catch (err) {
+      console.warn('stopCamera error', err)
+    } finally {
+      setStreaming(false)
     }
-    setStreaming(false)
   }
 
-  function takeSnapshot(){
-    const vw = videoRef.current.videoWidth
-    const vh = videoRef.current.videoHeight
-    const ctx = canvasRef.current.getContext('2d')
-    
-    // Resize to target dimensions
-    canvasRef.current.width = TARGET_WIDTH
-    canvasRef.current.height = TARGET_HEIGHT
-    
-    // Calculate aspect ratios to maintain proportions while fitting
-    const videoAspect = vw / vh
+  function resizeImageToCanvas(source, canvas) {
+    const ctx = canvas.getContext('2d')
+    canvas.width = TARGET_WIDTH
+    canvas.height = TARGET_HEIGHT
+
+    // get source dimensions (handle <video> or <img>)
+    const srcW = source.videoWidth ?? source.width
+    const srcH = source.videoHeight ?? source.height
+
+    const sourceAspect = srcW / srcH
     const targetAspect = TARGET_WIDTH / TARGET_HEIGHT
-    
+
     let drawWidth, drawHeight, offsetX, offsetY
-    
-    if (videoAspect > targetAspect) {
-      // Video is wider - fit by height
+
+    // Cover the canvas (crop to fill)
+    if (sourceAspect > targetAspect) {
       drawHeight = TARGET_HEIGHT
-      drawWidth = drawHeight * videoAspect
+      drawWidth = drawHeight * sourceAspect
       offsetX = (TARGET_WIDTH - drawWidth) / 2
       offsetY = 0
     } else {
-      // Video is taller - fit by width
       drawWidth = TARGET_WIDTH
-      drawHeight = drawWidth / videoAspect
+      drawHeight = drawWidth / sourceAspect
       offsetX = 0
       offsetY = (TARGET_HEIGHT - drawHeight) / 2
     }
-    
-    // Fill background with neutral color
-    ctx.fillStyle = '#f0f0f0'
+
+    ctx.fillStyle = '#ffffff'
     ctx.fillRect(0, 0, TARGET_WIDTH, TARGET_HEIGHT)
-    
-    ctx.drawImage(videoRef.current, offsetX, offsetY, drawWidth, drawHeight)
-    setUserImg(canvasRef.current.toDataURL('image/jpeg'))
-    setImageSource('camera') // Set source as camera
+    ctx.drawImage(source, offsetX, offsetY, drawWidth, drawHeight)
+
+    return canvas.toDataURL('image/jpeg', 0.92)
+  }
+
+  function takeSnapshot(){
+    if (!videoRef.current) {
+      alert('Video not ready')
+      return
+    }
+    const canvas = canvasRef.current ?? document.createElement('canvas')
+    const dataUrl = resizeImageToCanvas(videoRef.current, canvas)
+    setUserImg(dataUrl)
+    setImageSource('camera')
     stopCamera()
   }
 
   function onUpload(e){
-    const f = e.target.files[0]
+    const f = e.target.files && e.target.files[0]
     if(!f) return
     const reader = new FileReader()
     reader.onload = () => {
       const img = new Image()
       img.onload = () => {
-        // Resize uploaded image to target dimensions
-        const canvas = canvasRef.current
-        const ctx = canvas.getContext('2d')
-        canvas.width = TARGET_WIDTH
-        canvas.height = TARGET_HEIGHT
-        
-        const imgAspect = img.width / img.height
-        const targetAspect = TARGET_WIDTH / TARGET_HEIGHT
-        
-        let drawWidth, drawHeight, offsetX, offsetY
-        
-        if (imgAspect > targetAspect) {
-          drawHeight = TARGET_HEIGHT
-          drawWidth = drawHeight * imgAspect
-          offsetX = (TARGET_WIDTH - drawWidth) / 2
-          offsetY = 0
-        } else {
-          drawWidth = TARGET_WIDTH
-          drawHeight = drawWidth / imgAspect
-          offsetX = 0
-          offsetY = (TARGET_HEIGHT - drawHeight) / 2
-        }
-        
-        // Fill background
-        ctx.fillStyle = '#f0f0f0'
-        ctx.fillRect(0, 0, TARGET_WIDTH, TARGET_HEIGHT)
-        
-        ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight)
-        setUserImg(canvas.toDataURL('image/jpeg'))
-        setImageSource('upload') // Set source as upload
+        const canvas = canvasRef.current ?? document.createElement('canvas')
+        const dataUrl = resizeImageToCanvas(img, canvas)
+        setUserImg(dataUrl)
+        setImageSource('upload')
       }
+      img.onerror = () => alert('Failed to load uploaded image')
       img.src = reader.result
     }
+    reader.onerror = () => alert('Failed to read file')
     reader.readAsDataURL(f)
+    // reset input value so same file can be uploaded again if needed
+    e.target.value = ''
   }
 
-  // helper: convert dataURL to Blob
   function dataURLtoBlob(dataurl) {
     const arr = dataurl.split(',')
     const mime = arr[0].match(/:(.*?);/)[1]
     const bstr = atob(arr[1])
     let n = bstr.length
     const u8arr = new Uint8Array(n)
-    while(n--) {
-      u8arr[n] = bstr.charCodeAt(n)
-    }
+    while(n--) u8arr[n] = bstr.charCodeAt(n)
     return new Blob([u8arr], { type: mime })
   }
 
-  // fetch and resize product image
   async function fetchAndResizeProductBlob(url) {
     const r = await fetch(url)
     if(!r.ok) throw new Error('Failed to fetch product image')
     const blob = await r.blob()
-    
-    // Resize product image to match target dimensions
-    return new Promise((resolve) => {
+
+    return new Promise((resolve, reject) => {
       const img = new Image()
       img.onload = () => {
         const canvas = document.createElement('canvas')
-        const ctx = canvas.getContext('2d')
-        canvas.width = TARGET_WIDTH
-        canvas.height = TARGET_HEIGHT
-        
-        const imgAspect = img.width / img.height
-        const targetAspect = TARGET_WIDTH / TARGET_HEIGHT
-        
-        let drawWidth, drawHeight, offsetX, offsetY
-        
-        if (imgAspect > targetAspect) {
-          drawHeight = TARGET_HEIGHT
-          drawWidth = drawHeight * imgAspect
-          offsetX = (TARGET_WIDTH - drawWidth) / 2
-          offsetY = 0
-        } else {
-          drawWidth = TARGET_WIDTH
-          drawHeight = drawWidth / imgAspect
-          offsetX = 0
-          offsetY = (TARGET_HEIGHT - drawHeight) / 2
-        }
-        
-        // Fill background
-        ctx.fillStyle = '#ffffff'
-        ctx.fillRect(0, 0, TARGET_WIDTH, TARGET_HEIGHT)
-        
-        ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight)
-        
+        const dataUrl = resizeImageToCanvas(img, canvas)
         canvas.toBlob((resizedBlob) => {
+          if (!resizedBlob) return reject(new Error('Failed to create resized blob'))
           resolve(resizedBlob)
-        }, 'image/jpeg', 0.9)
+        }, 'image/jpeg', 0.92)
       }
+      img.onerror = () => reject(new Error('Failed to load product image'))
       img.src = URL.createObjectURL(blob)
     })
   }
 
-  // call backend /api/tryon with consistent dimensions
   async function callAIStyleMirror(){
     try {
       setLoading(true)
       setResultImage(null)
 
-      const productBlob = await fetchAndResizeProductBlob(productImage)
-
       if(!userImg || !imageSource) {
-        alert('Please capture or upload a person image first.')
+        alert('Please capture or upload your photo first.')
         setLoading(false)
         return
       }
+
+      const productBlob = await fetchAndResizeProductBlob(productImage)
       const userBlob = dataURLtoBlob(userImg)
 
       const form = new FormData()
       form.append('image1', productBlob, 'product.jpg')
       form.append('image2', userBlob, 'person.jpg')
-      // Add the source type explicitly
-      form.append('source_type', imageSource) // 'camera' or 'upload'
-      // Add dimension parameters for backend if supported
+      form.append('source_type', imageSource)
       form.append('target_width', TARGET_WIDTH.toString())
       form.append('target_height', TARGET_HEIGHT.toString())
-      // Add explicit prompt for better try-on results
       form.append('prompt', 'Virtual try-on: Show the person wearing the product clothing item. The person should be wearing the exact clothing item from image1. Maintain the person\'s face and body pose from image2, but replace their clothing with the product from image1. High quality, realistic, natural lighting.')
 
       const resp = await fetch('http://localhost:4000/api/tryon', { method: 'POST', body: form })
+      if (!resp.ok) {
+        const txt = await resp.text()
+        throw new Error(`Server error: ${resp.status} ${txt}`)
+      }
       const data = await resp.json()
 
-      // Process result and FORCE consistent dimensions
-      let imageUrl = null
-      if (data.resultUrl) {
-        imageUrl = data.resultUrl.startsWith('http') ? data.resultUrl : `http://localhost:4000${data.resultUrl}`
-      } else if (data.resultDataUrl) {
-        imageUrl = data.resultDataUrl
-      } else if (data.output_url) {
-        imageUrl = data.output_url
-      } else if (data.raw && data.raw.output && data.raw.output[0] && data.raw.output[0].image) {
-        imageUrl = data.raw.output[0].image
-      } else {
-        console.warn('Tryon response did not include an image. Full response:', data)
-        alert('No image returned by model. Check backend logs / Banana response. See console.')
+      let imageUrl = data.resultUrl || data.resultDataUrl || data.output_url || data.raw?.output?.[0]?.image
+
+      if (!imageUrl) {
+        console.warn('No image in response:', data)
+        alert('No image returned. Check backend logs.')
         return
       }
 
-      // ALWAYS resize AI result to match our target dimensions
-      if (imageUrl) {
-        console.log('Original AI result URL:', imageUrl)
-        console.log('Source type detected:', data.inputTypeDetected)
-        const resizedResult = await forceResizeImage(imageUrl)
-        setResultImage(resizedResult)
-        console.log('Resized to:', TARGET_WIDTH, 'x', TARGET_HEIGHT)
+      if (!imageUrl.startsWith('data:') && !imageUrl.startsWith('http')) {
+        imageUrl = `http://localhost:4000${imageUrl}`
       }
+
+      const resized = await forceResizeImage(imageUrl)
+      setResultImage(resized)
     } catch (err) {
-      console.error('callAIStyleMirror error', err)
-      alert('Error calling AI try-on: ' + err.message)
+      console.error('AI try-on error', err)
+      alert('Error: ' + (err && err.message ? err.message : err))
     } finally {
       setLoading(false)
     }
   }
 
-  // FORCE resize any image to exact target dimensions
   async function forceResizeImage(imageUrl) {
     return new Promise((resolve, reject) => {
       const img = new Image()
       img.crossOrigin = 'anonymous'
-      
       img.onload = () => {
-        console.log('Original image dimensions:', img.width, 'x', img.height)
-        
         const canvas = document.createElement('canvas')
-        const ctx = canvas.getContext('2d')
-        
-        // FORCE exact dimensions - no aspect ratio preservation
-        canvas.width = TARGET_WIDTH
-        canvas.height = TARGET_HEIGHT
-        
-        // Fill with white background first
-        ctx.fillStyle = '#ffffff'
-        ctx.fillRect(0, 0, TARGET_WIDTH, TARGET_HEIGHT)
-        
-        // Option 1: Stretch to fit (may distort)
-        // ctx.drawImage(img, 0, 0, TARGET_WIDTH, TARGET_HEIGHT)
-        
-        // Option 2: Crop to fit (maintains aspect ratio, may crop content)
-        const imgAspect = img.width / img.height
-        const targetAspect = TARGET_WIDTH / TARGET_HEIGHT
-        
-        let sourceX = 0, sourceY = 0, sourceWidth = img.width, sourceHeight = img.height
-        
-        if (imgAspect > targetAspect) {
-          // Image is wider - crop sides
-          sourceWidth = img.height * targetAspect
-          sourceX = (img.width - sourceWidth) / 2
-        } else {
-          // Image is taller - crop top/bottom
-          sourceHeight = img.width / targetAspect
-          sourceY = (img.height - sourceHeight) / 2
-        }
-        
-        ctx.drawImage(img, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, TARGET_WIDTH, TARGET_HEIGHT)
-        
-        const result = canvas.toDataURL('image/jpeg', 0.95)
-        console.log('Resized image to:', TARGET_WIDTH, 'x', TARGET_HEIGHT)
-        resolve(result)
+        const dataUrl = resizeImageToCanvas(img, canvas)
+        resolve(dataUrl)
       }
-      
-      img.onerror = () => {
-        console.error('Failed to load image for resizing:', imageUrl)
-        reject(new Error('Failed to load image for resizing'))
-      }
-      
+      img.onerror = () => reject(new Error('Failed to load image'))
       img.src = imageUrl
     })
   }
 
-  async function onDownloadResult(){
+  function onDownloadResult(){
     if(!resultImage) return
     const a = document.createElement('a')
     a.href = resultImage
-    a.download = `stylemirror-ai-result-${TARGET_WIDTH}x${TARGET_HEIGHT}.jpg`
-    a.click()
-  }
-
-  // Updated local mock with consistent dimensions
-  async function mergeImages(){
-    const canvas = canvasRef.current
-    const ctx = canvas.getContext('2d')
-    
-    // Set consistent output dimensions
-    canvas.width = TARGET_WIDTH
-    canvas.height = TARGET_HEIGHT
-    
-    // Fill background
-    ctx.fillStyle = '#f0f0f0'
-    ctx.fillRect(0, 0, TARGET_WIDTH, TARGET_HEIGHT)
-    
-    const base = new Image()
-    base.crossOrigin = 'anonymous'
-    base.src = userImg
-    await new Promise(res => base.onload = res)
-    
-    // Draw user image to fill canvas
-    const userAspect = base.width / base.height
-    const targetAspect = TARGET_WIDTH / TARGET_HEIGHT
-    
-    let baseWidth, baseHeight, baseX, baseY
-    if (userAspect > targetAspect) {
-      baseHeight = TARGET_HEIGHT
-      baseWidth = baseHeight * userAspect
-      baseX = (TARGET_WIDTH - baseWidth) / 2
-      baseY = 0
-    } else {
-      baseWidth = TARGET_WIDTH
-      baseHeight = baseWidth / userAspect
-      baseX = 0
-      baseY = (TARGET_HEIGHT - baseHeight) / 2
-    }
-    
-    ctx.drawImage(base, baseX, baseY, baseWidth, baseHeight)
-
-    const overlay = new Image()
-    overlay.crossOrigin = 'anonymous'
-    overlay.src = productImage
-    await new Promise(res => overlay.onload = res)
-
-    // Overlay product with consistent sizing
-    const targetW = TARGET_WIDTH * 0.6
-    const aspect = overlay.width / overlay.height
-    const targetH = targetW / aspect
-    const x = (TARGET_WIDTH - targetW) / 2
-    const y = TARGET_HEIGHT * 0.12
-    ctx.drawImage(overlay, x, y, targetW, targetH)
-
-    const result = canvas.toDataURL('image/jpeg', 0.9)
-    const a = document.createElement('a')
-    a.href = result
-    a.download = `stylemirror-result-${TARGET_WIDTH}x${TARGET_HEIGHT}.jpg`
+    a.download = `virtual-tryon-${Date.now()}.jpg`
     a.click()
   }
 
   return (
-    <div className="modal">
-      <div className="modal-content small" style={{ maxWidth: 900 }}>
-        <button className="close" onClick={() => { stopCamera(); onClose(); }}>✕</button>
-
-        <div style={{ marginBottom: 10, fontSize: 12, color: '#666' }}>
-          Output dimensions: {TARGET_WIDTH} × {TARGET_HEIGHT}px
-          {imageSource && <span> | Source: {imageSource}</span>}
-        </div>
-
-        {!userImg && (
-          <>
-            <div style={{ display:'flex', gap:10, alignItems:'center', marginBottom:10 }}>
-              <div>
-                <button onClick={startCamera}>Open Camera</button>
-                {streaming && <button onClick={takeSnapshot}>Capture Photo</button>}
-                <button onClick={stopCamera}>Stop Camera</button>
-              </div>
-              <div>
-                <input type="file" accept="image/*" onChange={onUpload} />
-              </div>
-            </div>
-
-            <div className="camera-area" style={{ display:'flex', gap:10 }}>
-              <video ref={videoRef} autoPlay playsInline muted className="camera-small" />
-              <div>
-                <p style={{ margin:0, fontSize:13 }}>Person image will be resized to {TARGET_WIDTH}×{TARGET_HEIGHT}px</p>
-              </div>
-            </div>
-          </>
-        )}
-
-        <canvas ref={canvasRef} style={{ display: 'none' }} />
-
-        {userImg && (
-          <div style={{ display:'flex', gap:12, marginTop:12, alignItems:'center' }}>
-            <div>
-              <img src={userImg} alt="person" style={{ maxWidth:200, borderRadius:6, border:'1px solid #ddd' }} />
-              <div style={{ fontSize: 11, color: '#666', marginTop: 4 }}>
-                {TARGET_WIDTH} × {TARGET_HEIGHT}px ({imageSource})
-              </div>
-            </div>
-            <div>
-              <button onClick={() => { 
-                setUserImg(null); 
-                setImageSource(null); 
-              }}>Retake / Upload Again</button>
-            </div>
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0,0,0,0.7)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 9999,
+      padding: '20px'
+    }}>
+      <div style={{
+        backgroundColor: 'white',
+        borderRadius: '16px',
+        maxWidth: '1100px',
+        width: '100%',
+        maxHeight: '95vh',
+        overflow: 'auto',
+        boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
+      }}>
+        {/* Header */}
+        <div style={{
+          borderBottom: '1px solid #e5e7eb',
+          padding: '20px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          background: 'linear-gradient(to right, #ff3e6c, #ff527b)'
+        }}>
+          <div>
+            <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: 'white', margin: 0 }}>Virtual Try-On</h2>
+            <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.9)', marginTop: '4px' }}>See how this product looks on you</p>
           </div>
-        )}
-
-        <div style={{ marginTop:12, display:'flex', gap:10 }}>
-          <button disabled={loading} onClick={callAIStyleMirror} className="btn pink">
-            {loading ? 'Processing…' : 'StyleMirror AI'}
+          <button 
+            onClick={() => { stopCamera(); onClose(); }}
+            style={{
+              background: 'rgba(255,255,255,0.2)',
+              border: 'none',
+              borderRadius: '50%',
+              width: '40px',
+              height: '40px',
+              cursor: 'pointer',
+              fontSize: '24px',
+              color: 'white',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            ×
           </button>
-          <button onClick={mergeImages} className="btn">Generate Local Mock (download)</button>
-          <button onClick={() => { 
-            setUserImg(null); 
-            setImageSource(null); 
-            setResultImage(null); 
-          }}>Clear</button>
         </div>
 
-        <div style={{ marginTop:12 }}>
-          <strong>Product preview:</strong>
-          <div style={{ marginTop:8 }}>
-            <img src={productImage} alt="product" style={{ maxWidth:200, borderRadius:6, border:'1px solid #ddd' }} />
+        <div style={{ padding: '24px' }}>
+          {/* Main Content Grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
+            {/* Left Column - Input */}
+            <div>
+              <div style={{
+                background: 'linear-gradient(135deg, #fef3f5 0%, #fce7f3 100%)',
+                borderRadius: '12px',
+                padding: '24px',
+                border: '1px solid #fbbfdc',
+                marginBottom: '20px'
+              }}>
+                <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  📷 Your Photo
+                </h3>
+
+                {!userImg ? (
+                  <div>
+                    {/* Camera View */}
+                    <div style={{ position: 'relative', marginBottom: '16px' }}>
+                      <video 
+                        ref={videoRef} 
+                        autoPlay 
+                        playsInline 
+                        muted 
+                        style={{
+                          display: streaming ? 'block' : 'none', // always in DOM; hidden when not streaming
+                          width: '100%',
+                          borderRadius: '8px',
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                          aspectRatio: `${TARGET_WIDTH}/${TARGET_HEIGHT}`,
+                          objectFit: 'cover'
+                        }}
+                      />
+                      {streaming && (
+                        <div style={{
+                          position: 'absolute',
+                          bottom: '16px',
+                          left: '50%',
+                          transform: 'translateX(-50%)'
+                        }}>
+                          <button 
+                            onClick={takeSnapshot}
+                            style={{
+                              background: '#ff3e6c',
+                              color: 'white',
+                              border: 'none',
+                              padding: '12px 32px',
+                              borderRadius: '24px',
+                              fontWeight: '600',
+                              cursor: 'pointer',
+                              boxShadow: '0 4px 12px rgba(255,62,108,0.4)',
+                              fontSize: '16px'
+                            }}
+                          >
+                            ✓ Capture
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Upload Options */}
+                    {!streaming && (
+                      <div>
+                        <button 
+                          onClick={startCamera}
+                          style={{
+                            width: '100%',
+                            background: '#ff3e6c',
+                            color: 'white',
+                            border: 'none',
+                            padding: '16px',
+                            borderRadius: '12px',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            fontSize: '16px',
+                            marginBottom: '12px'
+                          }}
+                        >
+                          📷 Open Camera
+                        </button>
+
+                        <div style={{ textAlign: 'center', margin: '12px 0', color: '#9ca3af', fontSize: '14px' }}>or</div>
+
+                        <label style={{
+                          display: 'block',
+                          width: '100%',
+                          background: 'white',
+                          border: '2px dashed #d1d5db',
+                          padding: '16px',
+                          borderRadius: '12px',
+                          fontWeight: '600',
+                          cursor: 'pointer',
+                          fontSize: '16px',
+                          textAlign: 'center',
+                          color: '#4b5563'
+                        }}>
+                          📤 Upload Photo
+                          <input type="file" accept="image/*" onChange={onUpload} style={{ display: 'none' }} />
+                        </label>
+
+                        <p style={{ fontSize: '12px', color: '#6b7280', textAlign: 'center', marginTop: '12px' }}>
+                          Images will be resized to {TARGET_WIDTH}×{TARGET_HEIGHT}px
+                        </p>
+                      </div>
+                    )}
+
+                    {streaming && (
+                      <button 
+                        onClick={stopCamera}
+                        style={{
+                          width: '100%',
+                          background: '#e5e7eb',
+                          color: '#374151',
+                          border: 'none',
+                          padding: '12px',
+                          borderRadius: '12px',
+                          fontWeight: '600',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <div>
+                    <div style={{ position: 'relative', marginBottom: '16px' }}>
+                      <img 
+                        src={userImg} 
+                        alt="Your photo" 
+                        style={{
+                          width: '100%',
+                          borderRadius: '8px',
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                          aspectRatio: `${TARGET_WIDTH}/${TARGET_HEIGHT}`,
+                          objectFit: 'cover'
+                        }}
+                      />
+                      <div style={{
+                        position: 'absolute',
+                        top: '12px',
+                        right: '12px',
+                        background: '#10b981',
+                        color: 'white',
+                        padding: '4px 12px',
+                        borderRadius: '12px',
+                        fontSize: '12px',
+                        fontWeight: '600'
+                      }}>
+                        ✓ Ready
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => { setUserImg(null); setImageSource(null); }}
+                      style={{
+                        width: '100%',
+                        background: '#e5e7eb',
+                        color: '#374151',
+                        border: 'none',
+                        padding: '12px',
+                        borderRadius: '12px',
+                        fontWeight: '600',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      ↻ Retake Photo
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Product Preview */}
+              <div style={{
+                background: '#f9fafb',
+                borderRadius: '12px',
+                padding: '24px',
+                border: '1px solid #e5e7eb'
+              }}>
+                <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '16px' }}>Product</h3>
+                <img 
+                  src={productImage} 
+                  alt="Product" 
+                  style={{
+                    width: '100%',
+                    borderRadius: '8px',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                    aspectRatio: `${TARGET_WIDTH}/${TARGET_HEIGHT}`,
+                    objectFit: 'cover'
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Right Column - Result */}
+            <div>
+              <div style={{
+                background: 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)',
+                borderRadius: '12px',
+                padding: '24px',
+                border: '1px solid #ddd6fe',
+                minHeight: '500px',
+                display: 'flex',
+                flexDirection: 'column'
+              }}>
+                <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  ✨ AI Try-On Result
+                </h3>
+
+                {!resultImage && !loading && (
+                  <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', color: '#9ca3af' }}>
+                    <div>
+                      <div style={{ fontSize: '64px', marginBottom: '16px' }}>✨</div>
+                      <p style={{ fontSize: '18px', fontWeight: '500', margin: 0 }}>Your result will appear here</p>
+                      <p style={{ fontSize: '14px', marginTop: '8px' }}>Upload your photo and click "Try It On"</p>
+                    </div>
+                  </div>
+                )}
+
+                {loading && (
+                  <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+                    <div>
+                      <div style={{
+                        width: '64px',
+                        height: '64px',
+                        border: '4px solid #f3f4f6',
+                        borderTop: '4px solid #ff3e6c',
+                        borderRadius: '50%',
+                        animation: 'spin 1s linear infinite',
+                        margin: '0 auto 16px'
+                      }}></div>
+                      <p style={{ fontSize: '18px', fontWeight: '600', color: '#374151', margin: 0 }}>Creating your try-on...</p>
+                      <p style={{ fontSize: '14px', color: '#6b7280', marginTop: '8px' }}>This may take a few moments</p>
+                    </div>
+                  </div>
+                )}
+
+                {resultImage && (
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white', borderRadius: '8px', padding: '16px' }}>
+                      <img 
+                        src={resultImage} 
+                        alt="Try-on result" 
+                        style={{
+                          maxWidth: '100%',
+                          maxHeight: '500px',
+                          borderRadius: '8px',
+                          boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+                          aspectRatio: `${TARGET_WIDTH}/${TARGET_HEIGHT}`,
+                          objectFit: 'contain'
+                        }}
+                      />
+                    </div>
+                    <button 
+                      onClick={onDownloadResult}
+                      style={{
+                        width: '100%',
+                        background: 'linear-gradient(to right, #ff3e6c, #a855f7)',
+                        color: 'white',
+                        border: 'none',
+                        padding: '16px',
+                        borderRadius: '12px',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        fontSize: '16px',
+                        boxShadow: '0 4px 12px rgba(255,62,108,0.3)'
+                      }}
+                    >
+                      ⬇️ Download Result
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div style={{ marginTop: '24px', display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
+            <button 
+              disabled={loading || !userImg}
+              onClick={callAIStyleMirror}
+              style={{
+                background: loading || !userImg ? '#d1d5db' : 'linear-gradient(to right, #ff3e6c, #a855f7)',
+                color: 'white',
+                border: 'none',
+                padding: '16px 32px',
+                borderRadius: '12px',
+                fontWeight: '700',
+                fontSize: '18px',
+                cursor: loading || !userImg ? 'not-allowed' : 'pointer',
+                boxShadow: loading || !userImg ? 'none' : '0 4px 12px rgba(255,62,108,0.4)'
+              }}
+            >
+              ✨ {loading ? 'Processing...' : 'Try It On with AI'}
+            </button>
+            
+            {resultImage && (
+              <button 
+                onClick={() => { setUserImg(null); setImageSource(null); setResultImage(null); }}
+                style={{
+                  background: 'white',
+                  border: '2px solid #d1d5db',
+                  color: '#374151',
+                  padding: '16px 24px',
+                  borderRadius: '12px',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                ↻ Start Over
+              </button>
+            )}
+          </div>
+
+          {/* Info Footer */}
+          <div style={{
+            marginTop: '24px',
+            background: '#dbeafe',
+            border: '1px solid #93c5fd',
+            borderRadius: '12px',
+            padding: '16px',
+            textAlign: 'center'
+          }}>
+            <p style={{ fontSize: '14px', color: '#1e40af', margin: 0 }}>
+              <strong>✨ AI-Powered Virtual Try-On</strong> • All images standardized to {TARGET_WIDTH}×{TARGET_HEIGHT}px for best results
+            </p>
           </div>
         </div>
-
-        <div style={{ marginTop:18 }}>
-          { resultImage && (
-            <>
-              {/* <h4>AI Result (FORCED to {TARGET_WIDTH} × {TARGET_HEIGHT}px)</h4> */}
-              <div style={{ border: '2px solid #007bff', padding: 4, display: 'inline-block', borderRadius: 8 }}>
-                <img src={resultImage} alt="AI Result" 
-                     style={{ 
-                       width: `${TARGET_WIDTH/2}px`, 
-                       height: `${TARGET_HEIGHT/2}px`, 
-                       display: 'block',
-                       objectFit: 'contain'
-                     }} />
-              </div>
-              <div style={{ marginTop:8, fontSize: 12, color: '#666' }}>
-                Displayed at 50% scale for preview. Actual size: {TARGET_WIDTH}×{TARGET_HEIGHT}px
-              </div>
-              <div style={{ marginTop:8 }}>
-                <button onClick={onDownloadResult}>Download Result</button>
-              </div>
-            </>
-          ) }
-        </div>
-
-        <p className="small-note">
-          All images are standardized to {TARGET_WIDTH}×{TARGET_HEIGHT}px for consistency. 
-          StyleMirror AI merges product+person by calling a backend model (Gemini Nano via Banana).
-        </p>
       </div>
+
+      <canvas ref={canvasRef} style={{ display: 'none' }} />
+      
+      <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   )
 }
