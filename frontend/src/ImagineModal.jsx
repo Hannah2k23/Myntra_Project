@@ -174,6 +174,7 @@ export default function ImagineModal({ productImage, onClose }){
   }
 
   async function callAIStyleMirror(){
+    const startTime = Date.now()
     try {
       setLoading(true)
       setResultImage(null)
@@ -184,8 +185,12 @@ export default function ImagineModal({ productImage, onClose }){
         return
       }
 
+      console.log('🚀 Starting AI try-on...')
+
+      console.log('📦 Preparing images...')
       const productBlob = await fetchAndResizeProductBlob(productImage)
       const userBlob = dataURLtoBlob(userImg)
+      console.log(`✅ Images prepared (${Date.now() - startTime}ms)`)
 
       const form = new FormData()
       form.append('image1', productBlob, 'product.jpg')
@@ -195,29 +200,68 @@ export default function ImagineModal({ productImage, onClose }){
       form.append('target_height', TARGET_HEIGHT.toString())
       form.append('prompt', 'Virtual try-on: Show the person wearing the product clothing item. The person should be wearing the exact clothing item from image1. Maintain the person\'s face and body pose from image2, but replace their clothing with the product from image1. High quality, realistic, natural lighting.')
 
-      const resp = await fetch('http://localhost:4000/api/tryon', { method: 'POST', body: form })
+      console.log('📡 Sending request to backend...')
+      const resp = await fetch('http://localhost:4000/api/tryon', { 
+        method: 'POST', 
+        body: form 
+      })
+      console.log(`✅ Response received (${Date.now() - startTime}ms)`)
+      
       if (!resp.ok) {
         const txt = await resp.text()
         throw new Error(`Server error: ${resp.status} ${txt}`)
       }
-      const data = await resp.json()
 
-      let imageUrl = data.resultUrl || data.resultDataUrl || data.output_url || data.raw?.output?.[0]?.image
+      // Check content type to determine if it's an image or JSON
+      const contentType = resp.headers.get('content-type') || ''
+      console.log('📄 Content-Type:', contentType)
+      
+      let imageUrl
+      
+      if (contentType.startsWith('image/')) {
+        // Backend returned image directly - create blob URL
+        console.log('🖼️ Processing image response...')
+        const blob = await resp.blob()
+        console.log(`✅ Blob created: ${blob.size} bytes (${Date.now() - startTime}ms)`)
+        imageUrl = URL.createObjectURL(blob)
+        console.log('✅ Blob URL created:', imageUrl)
+      } else if (contentType.includes('application/json')) {
+        // Backend returned JSON with image URL
+        console.log('📋 Processing JSON response...')
+        const data = await resp.json()
+        console.log('Response data:', data)
+        imageUrl = data.resultUrl || data.resultDataUrl || data.resultFileUrl || data.output_url || data.raw?.output?.[0]?.image
 
-      if (!imageUrl) {
-        console.warn('No image in response:', data)
-        alert('No image returned. Check backend logs.')
-        return
+        if (!imageUrl) {
+          console.warn('No image in response:', data)
+          alert('No image returned. Check backend logs.')
+          return
+        }
+
+        // Convert relative URL to absolute if needed
+        if (!imageUrl.startsWith('data:') && !imageUrl.startsWith('http') && !imageUrl.startsWith('blob:')) {
+          imageUrl = `http://localhost:4000${imageUrl}`
+        }
+        console.log('✅ Image URL:', imageUrl)
+      } else {
+        throw new Error('Unexpected response type: ' + contentType)
       }
 
-      if (!imageUrl.startsWith('data:') && !imageUrl.startsWith('http')) {
-        imageUrl = `http://localhost:4000${imageUrl}`
-      }
-
+      // Resize the image to ensure consistent display
+      console.log('🎨 Resizing image for display...')
       const resized = await forceResizeImage(imageUrl)
+      console.log(`✅ Image resized (${Date.now() - startTime}ms)`)
+      
+      // Clean up blob URL if we created one
+      if (imageUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(imageUrl)
+        console.log('🧹 Blob URL cleaned up')
+      }
+      
       setResultImage(resized)
+      console.log(`🎉 Complete! Total time: ${Date.now() - startTime}ms`)
     } catch (err) {
-      console.error('AI try-on error', err)
+      console.error('❌ AI try-on error', err)
       alert('Error: ' + (err && err.message ? err.message : err))
     } finally {
       setLoading(false)
@@ -226,14 +270,30 @@ export default function ImagineModal({ productImage, onClose }){
 
   async function forceResizeImage(imageUrl) {
     return new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        reject(new Error('Image resize timeout after 30 seconds'))
+      }, 30000)
+
       const img = new Image()
       img.crossOrigin = 'anonymous'
       img.onload = () => {
-        const canvas = document.createElement('canvas')
-        const dataUrl = resizeImageToCanvas(img, canvas)
-        resolve(dataUrl)
+        clearTimeout(timeout)
+        try {
+          console.log(`📏 Image loaded: ${img.width}x${img.height}`)
+          const canvas = document.createElement('canvas')
+          const dataUrl = resizeImageToCanvas(img, canvas)
+          console.log('✅ Canvas conversion complete')
+          resolve(dataUrl)
+        } catch (err) {
+          reject(new Error('Canvas processing failed: ' + err.message))
+        }
       }
-      img.onerror = () => reject(new Error('Failed to load image'))
+      img.onerror = (e) => {
+        clearTimeout(timeout)
+        console.error('Image load error:', e)
+        reject(new Error('Failed to load image'))
+      }
+      console.log('🔄 Loading image from:', imageUrl.substring(0, 50) + '...')
       img.src = imageUrl
     })
   }
@@ -328,7 +388,7 @@ export default function ImagineModal({ productImage, onClose }){
                         playsInline 
                         muted 
                         style={{
-                          display: streaming ? 'block' : 'none', // always in DOM; hidden when not streaming
+                          display: streaming ? 'block' : 'none',
                           width: '100%',
                           borderRadius: '8px',
                           boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
@@ -534,7 +594,7 @@ export default function ImagineModal({ productImage, onClose }){
                         margin: '0 auto 16px'
                       }}></div>
                       <p style={{ fontSize: '18px', fontWeight: '600', color: '#374151', margin: 0 }}>Creating your try-on...</p>
-                      <p style={{ fontSize: '14px', color: '#6b7280', marginTop: '8px' }}>This may take a few moments</p>
+                      <p style={{ fontSize: '14px', color: '#6b7280', marginTop: '8px' }}>This may take 15-20 seconds</p>
                     </div>
                   </div>
                 )}
@@ -626,7 +686,7 @@ export default function ImagineModal({ productImage, onClose }){
             textAlign: 'center'
           }}>
             <p style={{ fontSize: '14px', color: '#1e40af', margin: 0 }}>
-              <strong>✨ AI-Powered Virtual Try-On</strong> • All images standardized to {TARGET_WIDTH}×{TARGET_HEIGHT}px for best results
+              <strong>✨ AI-Powered Virtual Try-On</strong> • Processing takes ~15 seconds • Images standardized to {TARGET_WIDTH}×{TARGET_HEIGHT}px
             </p>
           </div>
         </div>
