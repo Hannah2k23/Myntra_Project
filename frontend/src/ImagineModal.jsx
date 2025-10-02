@@ -30,24 +30,18 @@ export default function ImagineModal({ productImage, onClose }){
     try {
       const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
 
-      // Ensure video element is mounted (we always render it, so this should be instant)
       if (!videoRef.current) {
-        // unlikely because video is always rendered, but guard anyway
         setStreaming(true)
-        // small wait loop (shouldn't be needed)
         await new Promise(resolve => setTimeout(resolve, 50))
       } else {
         setStreaming(true)
       }
 
-      // Attach stream and play
       if (videoRef.current) {
         videoRef.current.srcObject = s
-        // play may reject if autoplay blocked, ignore the rejection
-        try { await videoRef.current.play() } catch(e) { /* autoplay blocked — user will need interaction */ }
+        try { await videoRef.current.play() } catch(e) { /* autoplay blocked */ }
         setStreaming(true)
       } else {
-        // fallback: stop tracks if we couldn't attach
         s.getTracks().forEach(t => t.stop())
         throw new Error('Video element not available')
       }
@@ -62,11 +56,9 @@ export default function ImagineModal({ productImage, onClose }){
       const vid = videoRef.current
       if (vid?.srcObject) {
         const stream = vid.srcObject
-        // stop all tracks
         if (typeof stream.getTracks === 'function') {
           stream.getTracks().forEach(t => t.stop())
         }
-        // clear reference
         vid.srcObject = null
       }
     } catch (err) {
@@ -81,7 +73,6 @@ export default function ImagineModal({ productImage, onClose }){
     canvas.width = TARGET_WIDTH
     canvas.height = TARGET_HEIGHT
 
-    // get source dimensions (handle <video> or <img>)
     const srcW = source.videoWidth ?? source.width
     const srcH = source.videoHeight ?? source.height
 
@@ -90,7 +81,6 @@ export default function ImagineModal({ productImage, onClose }){
 
     let drawWidth, drawHeight, offsetX, offsetY
 
-    // Cover the canvas (crop to fill)
     if (sourceAspect > targetAspect) {
       drawHeight = TARGET_HEIGHT
       drawWidth = drawHeight * sourceAspect
@@ -139,7 +129,6 @@ export default function ImagineModal({ productImage, onClose }){
     }
     reader.onerror = () => alert('Failed to read file')
     reader.readAsDataURL(f)
-    // reset input value so same file can be uploaded again if needed
     e.target.value = ''
   }
 
@@ -195,9 +184,6 @@ export default function ImagineModal({ productImage, onClose }){
       const form = new FormData()
       form.append('image1', productBlob, 'product.jpg')
       form.append('image2', userBlob, 'person.jpg')
-      form.append('source_type', imageSource)
-      form.append('target_width', TARGET_WIDTH.toString())
-      form.append('target_height', TARGET_HEIGHT.toString())
       form.append('prompt', 'Virtual try-on: Show the person wearing the product clothing item. The person should be wearing the exact clothing item from image1. Maintain the person\'s face and body pose from image2, but replace their clothing with the product from image1. High quality, realistic, natural lighting.')
 
       console.log('📡 Sending request to backend...')
@@ -212,51 +198,22 @@ export default function ImagineModal({ productImage, onClose }){
         throw new Error(`Server error: ${resp.status} ${txt}`)
       }
 
-      // Check content type to determine if it's an image or JSON
-      const contentType = resp.headers.get('content-type') || ''
-      console.log('📄 Content-Type:', contentType)
+      // Backend returns image directly as blob
+      console.log('🖼️ Processing image response...')
+      const blob = await resp.blob()
+      console.log(`✅ Blob created: ${blob.size} bytes (${Date.now() - startTime}ms)`)
       
-      let imageUrl
-      
-      if (contentType.startsWith('image/')) {
-        // Backend returned image directly - create blob URL
-        console.log('🖼️ Processing image response...')
-        const blob = await resp.blob()
-        console.log(`✅ Blob created: ${blob.size} bytes (${Date.now() - startTime}ms)`)
-        imageUrl = URL.createObjectURL(blob)
-        console.log('✅ Blob URL created:', imageUrl)
-      } else if (contentType.includes('application/json')) {
-        // Backend returned JSON with image URL
-        console.log('📋 Processing JSON response...')
-        const data = await resp.json()
-        console.log('Response data:', data)
-        imageUrl = data.resultUrl || data.resultDataUrl || data.resultFileUrl || data.output_url || data.raw?.output?.[0]?.image
-
-        if (!imageUrl) {
-          console.warn('No image in response:', data)
-          alert('No image returned. Check backend logs.')
-          return
-        }
-
-        // Convert relative URL to absolute if needed
-        if (!imageUrl.startsWith('data:') && !imageUrl.startsWith('http') && !imageUrl.startsWith('blob:')) {
-          imageUrl = `http://localhost:4000${imageUrl}`
-        }
-        console.log('✅ Image URL:', imageUrl)
-      } else {
-        throw new Error('Unexpected response type: ' + contentType)
-      }
+      const imageUrl = URL.createObjectURL(blob)
+      console.log('✅ Blob URL created:', imageUrl)
 
       // Resize the image to ensure consistent display
       console.log('🎨 Resizing image for display...')
       const resized = await forceResizeImage(imageUrl)
       console.log(`✅ Image resized (${Date.now() - startTime}ms)`)
       
-      // Clean up blob URL if we created one
-      if (imageUrl.startsWith('blob:')) {
-        URL.revokeObjectURL(imageUrl)
-        console.log('🧹 Blob URL cleaned up')
-      }
+      // Clean up blob URL
+      URL.revokeObjectURL(imageUrl)
+      console.log('🧹 Blob URL cleaned up')
       
       setResultImage(resized)
       console.log(`🎉 Complete! Total time: ${Date.now() - startTime}ms`)
