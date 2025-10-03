@@ -6,7 +6,7 @@ export default function ProductGrid({ filters }) {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:4000/api/products")
+    fetch("http://localhost:4001/api/products")
       .then((r) => r.json())
       .then(setProducts);
   }, []);
@@ -35,7 +35,7 @@ export default function ProductGrid({ filters }) {
             >
               <div className="card-img-wrap">
                 <img
-                  src={`http://localhost:4000${p.image}`}
+                  src={`http://localhost:4001${p.image}`}
                   alt={p.title}
                   className="card-img"
                 />

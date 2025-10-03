@@ -1,0 +1,11 @@
+# Python dependencies for garment segmentation
+# Basic requirements (required)
+opencv-python>=4.5.0
+pillow>=8.0.0
+numpy>=1.21.0
+colorthief>=0.2.1
+
+# Advanced U²-Net requirements (optional - for better accuracy)
+# torch>=1.9.0
+# torchvision>=0.10.0
+# scikit-image>=0.18.0

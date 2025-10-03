@@ -4,6 +4,7 @@ import Header from "./Header";
 import Filters from "./Filters";
 import ProductGrid from "./ProductGrid";
 import ProductPage from "./ProductPage";
+import CompleteMyLook from './CompleteMyLook'
 
 export default function App() {
   // Filter state
@@ -43,6 +44,7 @@ export default function App() {
             }
           />
           <Route path="/product/:id" element={<ProductPage />} />
+          <Route path="/complete-my-look" element={<CompleteMyLook />} />
         </Routes>
       </main>
     </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
@@ -53,7 +54,19 @@ export default function Header() {
             >
               {link}
             </Button>
-          ))}
+          ))}{/* Add Complete My Look button */}
+          <Button
+            component={Link}
+            to="/complete-my-look"
+            sx={{
+              color: "#ff3f6c",
+              fontWeight: 600,
+              textTransform: "none",
+              fontSize: 16,
+            }}
+          >
+            Complete My Look
+          </Button>
         </Box>
 
         {/* Search Bar */}

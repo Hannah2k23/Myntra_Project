@@ -6,6 +6,7 @@ const path = require('path');
 const products = require('./products.json');
 
 const tryonRoutes = require('./routes/tryon');
+const completeMyLookRoutes = require('./routes/complete-my-look');
 
 const app = express();
 app.use(cors());
@@ -16,6 +17,9 @@ app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
 
 // Serve generated uploads (try-on outputs)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Serve segmentation outputs
+app.use('/segmentation', express.static(path.join(__dirname, 'segmentation')));
 
 // API endpoints
 app.get('/api/products', (req, res) => {
@@ -31,5 +35,8 @@ app.get('/api/products/:id', (req, res) => {
 // Try-on route
 app.use('/api/tryon', tryonRoutes);
 
-const PORT = process.env.PORT || 4000;
+// Complete My Look route
+app.use('/api/analyze', completeMyLookRoutes);
+
+const PORT = process.env.PORT || 4001;
 app.listen(PORT, () => console.log(`Backend running on http://localhost:${PORT}`));
