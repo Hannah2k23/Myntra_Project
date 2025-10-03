@@ -1,8 +1,29 @@
 import React, { useState, useEffect } from 'react'
 
+const getWeatherIcon = (category) => {
+  switch(category) {
+    case 'very_cold': return '🥶';
+    case 'cool': return '😌';
+    case 'warm': return '😊';
+    case 'hot': return '🥵';
+    default: return '🌡️';
+  }
+};
+
+const getWeatherLabel = (category) => {
+  switch(category) {
+    case 'very_cold': return 'Very Cold Weather';
+    case 'cool': return 'Cool Weather';
+    case 'warm': return 'Warm Weather';
+    case 'hot': return 'Hot Weather';
+    default: return 'Weather Analysis';
+  }
+};
+
 export default function CompleteMyLook() {
   const [formData, setFormData] = useState({
     uploaded_category: '',
+    item_description: '',
     image: null,
     min_price: '',
     max_price: '',
@@ -38,6 +59,11 @@ export default function CompleteMyLook() {
   const handleCategoryChange = (category) => {
     setFormData(prev => ({ ...prev, uploaded_category: category }))
     setErrors(prev => ({ ...prev, category: '' }))
+  }
+
+  const handleDescriptionChange = (description) => {
+    setFormData(prev => ({ ...prev, item_description: description }))
+    setErrors(prev => ({ ...prev, description: '' }))
   }
 
   const handlePriceChange = (field, value) => {
@@ -119,6 +145,10 @@ export default function CompleteMyLook() {
       newErrors.category = 'Please select a category for your uploaded item'
     }
 
+    if (!formData.item_description.trim()) {
+      newErrors.description = 'Please describe your item (e.g., crop top, oversized hoodie, skinny jeans)'
+    }
+
     if (!formData.image) {
       newErrors.image = 'Please upload an image'
     }
@@ -144,6 +174,7 @@ export default function CompleteMyLook() {
     
     const submitData = new FormData()
     submitData.append('uploaded_category', formData.uploaded_category)
+    submitData.append('item_description', formData.item_description)
     submitData.append('image', formData.image)
     submitData.append('min_price', formData.min_price)
     submitData.append('max_price', formData.max_price)
@@ -180,6 +211,7 @@ export default function CompleteMyLook() {
     }
   }
 
+  
   return (
     <div className="complete-my-look">
       <div className="cml-header">
@@ -204,6 +236,25 @@ export default function CompleteMyLook() {
             ))}
           </div>
           {errors.category && <div className="error-msg">{errors.category}</div>}
+        </section>
+
+        {/* Item Description */}
+        <section className="form-section">
+          <h3 className="section-title">Describe your vibe</h3>
+          <div className="description-input">
+            <input
+              type="text"
+              placeholder="e.g., crop top, oversized hoodie, skinny jeans, denim jacket, maxi dress, cargo shorts..."
+              value={formData.item_description}
+              onChange={(e) => handleDescriptionChange(e.target.value)}
+              className="description-field"
+              maxLength="50"
+            />
+            <small className="description-hint">
+              Tell us about your item style so we can suggest the perfect matches!
+            </small>
+          </div>
+          {errors.description && <div className="error-msg">{errors.description}</div>}
         </section>
 
         {/* Image Upload */}
@@ -350,6 +401,135 @@ export default function CompleteMyLook() {
       {analysisResult && (
         <div className="analysis-results">
           <h2 className="results-title">Your Style Analysis</h2>
+
+          {/* Weather Recommendations Section - ADD THIS ENTIRE SECTION */}
+          {analysisResult.analysis.weather_recommendations && (
+            <div className="weather-recommendations-section">
+              <h3 className="section-title">
+                Weather-Smart Recommendations 
+                <span className="temp-badge">
+                  {Math.round(analysisResult.analysis.temperature)}°C
+                </span>
+              </h3>
+              
+              <div className="weather-category">
+                <div className={`weather-indicator ${analysisResult.analysis.weather_recommendations.weather_category}`}>
+                  {getWeatherIcon(analysisResult.analysis.weather_recommendations.weather_category)}
+                  <span className="weather-label">
+                    {getWeatherLabel(analysisResult.analysis.weather_recommendations.weather_category)}
+                  </span>
+                </div>
+              </div>
+
+              <div className="recommendations-grid">
+                {/* Materials Recommendation */}
+                <div className="recommendation-card">
+                  <h4 className="rec-title">Recommended Materials</h4>
+                  <div className="material-tags">
+                    {analysisResult.analysis.weather_recommendations.recommendations.materials.map((material, index) => (
+                      <span key={index} className="material-tag recommended">
+                        {material}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Features Recommendation */}
+                <div className="recommendation-card">
+                  <h4 className="rec-title">Key Features</h4>
+                  <div className="feature-tags">
+                    {analysisResult.analysis.weather_recommendations.recommendations.features.map((feature, index) => (
+                      <span key={index} className="feature-tag recommended">
+                        {feature}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Avoid Recommendation */}
+                {analysisResult.analysis.weather_recommendations.recommendations.avoid.length > 0 && (
+                  <div className="recommendation-card avoid-card">
+                    <h4 className="rec-title">Avoid for This Weather</h4>
+                    <div className="avoid-tags">
+                      {analysisResult.analysis.weather_recommendations.recommendations.avoid.map((item, index) => (
+                        <span key={index} className="avoid-tag">
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+            </div>
+          )}
+
+          {/* Complementary Items Section */}
+          {analysisResult.analysis.weather_recommendations && analysisResult.analysis.weather_recommendations.recommendations.complementary_items && (
+            <div className="complementary-items-section">
+              <h3 className="section-title">
+                Perfect Matches for Your {analysisResult.analysis.item_description}
+              </h3>
+              
+              <div className="complementary-grid">
+                {/* Upper Wear Suggestions */}
+                {analysisResult.analysis.weather_recommendations.recommendations.complementary_items.upper_wear.length > 0 && (
+                  <div className="complementary-category">
+                    <h4 className="category-title">Upper Wear</h4>
+                    <div className="complementary-tags">
+                      {analysisResult.analysis.weather_recommendations.recommendations.complementary_items.upper_wear.map((item, index) => (
+                        <span key={index} className="complementary-tag upper">
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Bottom Wear Suggestions */}
+                {analysisResult.analysis.weather_recommendations.recommendations.complementary_items.bottom_wear.length > 0 && (
+                  <div className="complementary-category">
+                    <h4 className="category-title">Bottom Wear</h4>
+                    <div className="complementary-tags">
+                      {analysisResult.analysis.weather_recommendations.recommendations.complementary_items.bottom_wear.map((item, index) => (
+                        <span key={index} className="complementary-tag bottom">
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Footwear Suggestions */}
+                {analysisResult.analysis.weather_recommendations.recommendations.complementary_items.footwear.length > 0 && (
+                  <div className="complementary-category">
+                    <h4 className="category-title">Footwear</h4>
+                    <div className="complementary-tags">
+                      {analysisResult.analysis.weather_recommendations.recommendations.complementary_items.footwear.map((item, index) => (
+                        <span key={index} className="complementary-tag footwear">
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Accessories Suggestions */}
+                {analysisResult.analysis.weather_recommendations.recommendations.complementary_items.accessories.length > 0 && (
+                  <div className="complementary-category">
+                    <h4 className="category-title">Accessories</h4>
+                    <div className="complementary-tags">
+                      {analysisResult.analysis.weather_recommendations.recommendations.complementary_items.accessories.map((item, index) => (
+                        <span key={index} className="complementary-tag accessories">
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
           
           {/* Color Analysis Section */}
           {analysisResult.analysis.color_analysis && (
@@ -409,3 +589,7 @@ export default function CompleteMyLook() {
     </div>
   )
 }
+
+
+
+// export default CompleteMyLook;

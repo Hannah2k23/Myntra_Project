@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const { PythonShell } = require('python-shell');
 const sharp = require('sharp');
+const { getWeatherBasedRecommendations } = require('../utils/weatherRecommendations');
 
 const router = express.Router();
 
@@ -47,6 +48,9 @@ router.post('/', async (req, res) => {
       const uploaded_category = Array.isArray(fields.uploaded_category) 
         ? fields.uploaded_category[0] 
         : fields.uploaded_category;
+      const item_description = Array.isArray(fields.item_description) 
+        ? fields.item_description[0] 
+        : fields.item_description;
       const min_price = parseFloat(
         Array.isArray(fields.min_price) ? fields.min_price[0] : fields.min_price
       );
@@ -64,10 +68,10 @@ router.post('/', async (req, res) => {
         : null;
       
       // Validate required fields
-      if (!uploaded_category || !files.image || isNaN(min_price) || isNaN(max_price)) {
+      if (!uploaded_category || !item_description || !files.image || isNaN(min_price) || isNaN(max_price)) {
         return res.status(400).json({
           success: false,
-          message: 'Missing required fields: category, image, price range'
+          message: 'Missing required fields: category, description, image, price range'
         });
       }
       
@@ -86,6 +90,12 @@ router.post('/', async (req, res) => {
       const sessionId = `cml_${Date.now()}_${Math.random().toString(36).substring(7)}`;
       const outputDir = path.join(__dirname, '..', 'segmentation', 'outputs', sessionId);
       
+      let weatherRecommendations = null;
+    if (temp_c !== null && !isNaN(temp_c)) {
+        weatherRecommendations = getWeatherBasedRecommendations(temp_c, uploaded_category, item_description);
+        console.log(`🌡️ Weather recommendations for ${temp_c}°C, category '${uploaded_category}', description '${item_description}':`, weatherRecommendations);
+    }
+
       try {
         // Optimize image if needed (resize large images)
         const optimizedPath = path.join(outputDir, 'optimized_input.jpg');
@@ -120,9 +130,11 @@ router.post('/', async (req, res) => {
           session_id: sessionId,
           analysis: {
             uploaded_category,
+            item_description,
             price_range: { min: min_price, max: max_price },
             location: lat && lon ? { lat, lon } : null,
             temperature: temp_c,
+            weather_recommendations: weatherRecommendations,
             segmentation: {
               mask_area: segmentationResult.mask_area,
               crop_size: segmentationResult.crop_size,
@@ -141,11 +153,11 @@ router.post('/', async (req, res) => {
           },
           next_steps: [
             segmentationResult.color_analysis ? '✅ Color extraction completed' : '⏳ Color extraction',
+            weatherRecommendations ? '✅ Weather-based material recommendations' : '⏳ Weather analysis',
             'CLIP-based category classification', 
             'Style compatibility analysis',
-            'Weather-aware recommendations',
             'Budget-filtered catalog search'
-          ]
+        ]
         };
         
         res.json(response);
