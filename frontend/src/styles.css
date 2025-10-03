@@ -1,4 +1,32 @@
-/* Product Grid Styles */
+/* =========================
+   Global reset / base
+   ========================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+body {
+  font-family: Inter, Arial, sans-serif;
+  background: #f7f7f7;
+  color: #111827;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Utility */
+.hidden { display: none !important; }
+
+/* =========================
+   Product Grid / Product Page
+   (kept scoped and non-conflicting)
+   ========================= */
+
+/* Product Grid */
 .product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -119,15 +147,17 @@
   color: #282c3f;
 }
 
-/* Product Page Styles */
+/* Product Page */
 .product-page {
   display: flex;
   gap: 48px;
-  padding: 32px 0;
+  padding: 32px;
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 2px 12px rgba(40,44,63,0.07);
   margin-bottom: 32px;
+  align-items: flex-start;
+  flex-wrap: wrap;
 }
 
 .product-images {
@@ -136,6 +166,7 @@
   flex-direction: column;
   align-items: center;
   position: relative;
+  min-width: 280px;
 }
 
 .product-main-img {
@@ -148,17 +179,22 @@
 }
 
 .product-discount {
+  position: absolute;
   top: 18px;
   left: 18px;
   font-size: 15px;
   padding: 6px 16px;
+  background: #ff3f6c;
+  color: #fff;
+  border-radius: 16px;
 }
 
 .product-info {
-  flex: 1;
+  flex: 1 1 420px;
   display: flex;
   flex-direction: column;
   gap: 18px;
+  min-width: 220px;
 }
 
 .product-brand {
@@ -179,6 +215,7 @@
   align-items: center;
   gap: 16px;
   font-size: 18px;
+  flex-wrap: wrap;
 }
 
 .price {
@@ -207,6 +244,7 @@
   display: flex;
   gap: 12px;
   margin-top: 8px;
+  flex-wrap: wrap;
 }
 
 .size {
@@ -231,6 +269,7 @@
   gap: 18px;
   margin-top: 18px;
   margin-right: 18px;
+  flex-wrap: wrap;
 }
 
 .btn {
@@ -267,3 +306,284 @@
   text-align: center;
   margin-top: 80px;
 }
+
+/* =========================
+   Myntra Login Page (consolidated)
+   ========================= */
+
+/* page container */
+.myntra-login-page {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #ffffff 0%, #f7f7f7 100%);
+  gap: 32px;
+  align-items: stretch;
+  padding: 40px 28px;
+  box-sizing: border-box;
+  justify-content: center; /* centers content on very wide screens */
+}
+
+/* Left column — form */
+.login-left {
+  flex: 1 1 720px;   /* grows and shrinks, base width 720px */
+  max-width: 980px;
+  padding: 48px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04);
+}
+
+/* Logo row */
+.logo-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.icon-shop { width: 40px; height: 40px; color: #ec4899; }
+.brand-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  margin: 18px 0 24px;
+}
+.tab-btn {
+  background: none;
+  border: none;
+  padding: 8px 4px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #6b7280;
+  cursor: pointer;
+  position: relative;
+}
+.tab-btn.active { color: #ec4899; }
+.tab-btn.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 3px;
+  background: #ec4899;
+  border-radius: 3px 3px 0 0;
+}
+
+/* Form */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 480px;
+  width: 100%;
+}
+.form-group { width: 100%; }
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 15px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  color: #111827;
+  background: #fff;
+}
+.input::placeholder { color: #9ca3af; }
+.input-focused {
+  border-color: #ec4899;
+  box-shadow: 0 3px 10px rgba(236,72,153,0.08);
+}
+
+/* Password toggle */
+.password-group { position: relative; }
+.show-pass-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+}
+.eye-icon { width: 18px; height: 18px; color: #6b7280; }
+
+/* Links & small text */
+.link-btn, .link-btn-inline {
+  background: none;
+  border: none;
+  color: #ec4899;
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0;
+}
+.link-btn { font-size: 13px; }
+.terms {
+  font-size: 12px;
+  color: #6b7280;
+  max-width: 540px;
+}
+
+/* Buttons */
+.primary-btn {
+  background: #ec4899;
+  color: #fff;
+  font-weight: 700;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+}
+.primary-btn:hover { background: #db2777; }
+
+.secondary-btn {
+  background: #fff;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  font-weight: 700;
+  padding: 11px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 4px;
+}
+.hr { flex: 1; height: 1px; background: #e5e7eb; }
+.or-text { font-size: 12px; color: #9ca3af; }
+
+/* Trouble text */
+.trouble {
+  margin-top: 18px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* Right column — marketing */
+.login-right {
+  display: none; /* hidden on small screens */
+  flex: 0 0 360px;
+  max-width: 420px;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  box-sizing: border-box;
+}
+.marketing-card { max-width: 420px; text-align: center; width: 100%; }
+.logo-circle {
+  width: 128px;
+  height: 128px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ec4899, #7c3aed);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+.brand-icon { width: 56px; height: 56px; color: #fff; }
+.small-badge {
+  position: relative;
+  margin-top: -20px;
+  margin-bottom: 18px;
+}
+.heart-icon {
+  width: 28px;
+  height: 28px;
+  color: #fff;
+  background: #f59e0b;
+  border-radius: 999px;
+  padding: 6px;
+}
+.marketing-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 8px;
+  color: #111827;
+}
+.marketing-sub { color: #6b7280; font-size: 15px; margin-bottom: 16px; }
+.marketing-list {
+  background: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(16,24,40,0.04);
+  text-align: left;
+}
+.marketing-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  background: #ec4899;
+  border-radius: 999px;
+  margin-top: 8px;
+}
+
+/* =========================
+   Responsive Breakpoints
+   ========================= */
+
+/* Large screens: show marketing column */
+@media (min-width: 992px) {
+  .login-right { display: flex; }
+  .login-left { padding-left: 64px; padding-right: 48px; }
+}
+
+/* Medium & small screens: stack and simplify */
+@media (max-width: 991px) {
+  .myntra-login-page {
+    flex-direction: column;
+    gap: 18px;
+    padding: 28px 18px;
+    align-items: stretch;
+  }
+  .login-right { display: none; }
+  .login-left {
+    width: 100%;
+    max-width: none;
+    padding: 28px;
+    border-radius: 10px;
+  }
+  .auth-form { max-width: 100%; }
+  .product-page { padding: 20px; gap: 18px; flex-direction: column; }
+  .product-images { order: -1; width: 100%; display: flex; justify-content: center; }
+  .product-main-img { width: 100%; max-width: 420px; height: auto; aspect-ratio: 1/1; }
+}
+
+/* Very small phones */
+@media (max-width: 420px) {
+  .myntra-login-page { padding: 18px 12px; }
+  .brand-title { font-size: 24px; }
+  .primary-btn, .secondary-btn { padding: 12px; font-size: 15px; }
+  .logo-circle { width: 96px; height: 96px; }
+}
+
+/* =========================
+   Minor helpers & accessibility
+   ========================= */
+button:focus, input:focus { outline: none; }
+button { font-family: inherit; }
+a { color: inherit; text-decoration: none; }
+
