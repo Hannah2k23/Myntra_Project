@@ -28,6 +28,68 @@ def adjust_brightness(rgb, factor):
     """Adjust brightness of RGB color by factor (0-2, where 1=original)"""
     return tuple(max(0, min(255, int(c * factor))) for c in rgb)
 
+def rgb_to_hsl(r, g, b):
+    """Convert RGB to HSL"""
+    r, g, b = r/255.0, g/255.0, b/255.0
+    max_val = max(r, g, b)
+    min_val = min(r, g, b)
+    diff = max_val - min_val
+    
+    # Lightness
+    l = (max_val + min_val) / 2
+    
+    if diff == 0:
+        h = s = 0  # achromatic
+    else:
+        # Saturation
+        s = diff / (2 - max_val - min_val) if l > 0.5 else diff / (max_val + min_val)
+        
+        # Hue
+        if max_val == r:
+            h = (g - b) / diff + (6 if g < b else 0)
+        elif max_val == g:
+            h = (b - r) / diff + 2
+        else:
+            h = (r - g) / diff + 4
+        h /= 6
+    
+    return h, s, l
+
+def hsl_to_rgb(h, s, l):
+    """Convert HSL to RGB"""
+    def hue_to_rgb(p, q, t):
+        if t < 0: t += 1
+        if t > 1: t -= 1
+        if t < 1/6: return p + (q - p) * 6 * t
+        if t < 1/2: return q
+        if t < 2/3: return p + (q - p) * (2/3 - t) * 6
+        return p
+    
+    if s == 0:
+        r = g = b = l  # achromatic
+    else:
+        q = l * (1 + s) if l < 0.5 else l + s - l * s
+        p = 2 * l - q
+        r = hue_to_rgb(p, q, h + 1/3)
+        g = hue_to_rgb(p, q, h)
+        b = hue_to_rgb(p, q, h - 1/3)
+    
+    return tuple(int(round(c * 255)) for c in (r, g, b))
+
+def create_extreme_variations(rgb):
+    """Create more extreme lighter and darker variations using HSL"""
+    h, s, l = rgb_to_hsl(*rgb)
+    
+    # Create much lighter version (increase lightness significantly)
+    lighter_l = min(0.95, l + 0.4)  # Add 40% lightness, cap at 95%
+    lighter_rgb = hsl_to_rgb(h, s, lighter_l)
+    
+    # Create much darker version (decrease lightness significantly)  
+    darker_l = max(0.05, l - 0.45)  # Subtract 45% lightness, floor at 5%
+    darker_rgb = hsl_to_rgb(h, s, darker_l)
+    
+    return lighter_rgb, darker_rgb
+
 def get_complementary_color(rgb):
     """Get complementary color on color wheel"""
     return tuple(255 - c for c in rgb)
@@ -84,13 +146,10 @@ def extract_color_palette(image_path, mask_path):
         dominant_rgb = dominant_color
         print(f"🧮 Calculating color variations from RGB{dominant_rgb}:", file=sys.stderr)
         
-        # 1. Lighter shade (increase brightness by 30%)
-        lighter_rgb = adjust_brightness(dominant_rgb, 1.3)
-        print(f"     ☀️  Lighter shade (+30%): RGB{lighter_rgb}", file=sys.stderr)
-        
-        # 2. Darker shade (decrease brightness by 30%) 
-        darker_rgb = adjust_brightness(dominant_rgb, 0.7)
-        print(f"     🌙 Darker shade (-30%): RGB{darker_rgb}", file=sys.stderr)
+        # 1 & 2. Create extreme lighter and darker variations using HSL
+        lighter_rgb, darker_rgb = create_extreme_variations(dominant_rgb)
+        print(f"     ☀️  Extreme lighter shade: RGB{lighter_rgb}", file=sys.stderr)
+        print(f"     🌙 Extreme darker shade: RGB{darker_rgb}", file=sys.stderr)
         
         # 3. Complementary color
         complementary_rgb = get_complementary_color(dominant_rgb)
