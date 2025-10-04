@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react'
 
-export default function ImagineModal({ productImage, onClose }){
+export default function ImagineModal({ productImage, onClose }) {
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
   const [userImg, setUserImg] = useState(null)
@@ -12,7 +12,7 @@ export default function ImagineModal({ productImage, onClose }){
   // Consistent dimensions - portrait orientation like Myntra
   const TARGET_WIDTH = 512
   const TARGET_HEIGHT = 768
-  
+
 
   useEffect(() => {
     // cleanup on unmount: stop camera
@@ -22,7 +22,7 @@ export default function ImagineModal({ productImage, onClose }){
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  async function startCamera(){
+  async function startCamera() {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       alert('Camera API not supported in this browser')
       return
@@ -40,19 +40,19 @@ export default function ImagineModal({ productImage, onClose }){
 
       if (videoRef.current) {
         videoRef.current.srcObject = s
-        try { await videoRef.current.play() } catch(e) { /* autoplay blocked */ }
+        try { await videoRef.current.play() } catch (e) { /* autoplay blocked */ }
         setStreaming(true)
       } else {
         s.getTracks().forEach(t => t.stop())
         throw new Error('Video element not available')
       }
-    } catch(e){
+    } catch (e) {
       console.error('startCamera error', e)
       alert('Camera access denied: ' + (e && e.message ? e.message : e))
     }
   }
 
-  function stopCamera(){
+  function stopCamera() {
     try {
       const vid = videoRef.current
       if (vid?.srcObject) {
@@ -101,7 +101,7 @@ export default function ImagineModal({ productImage, onClose }){
     return canvas.toDataURL('image/jpeg', 0.92)
   }
 
-  function takeSnapshot(){
+  function takeSnapshot() {
     if (!videoRef.current) {
       alert('Video not ready')
       return
@@ -113,9 +113,9 @@ export default function ImagineModal({ productImage, onClose }){
     stopCamera()
   }
 
-  function onUpload(e){
+  function onUpload(e) {
     const f = e.target.files && e.target.files[0]
-    if(!f) return
+    if (!f) return
     const reader = new FileReader()
     reader.onload = () => {
       const img = new Image()
@@ -139,13 +139,13 @@ export default function ImagineModal({ productImage, onClose }){
     const bstr = atob(arr[1])
     let n = bstr.length
     const u8arr = new Uint8Array(n)
-    while(n--) u8arr[n] = bstr.charCodeAt(n)
+    while (n--) u8arr[n] = bstr.charCodeAt(n)
     return new Blob([u8arr], { type: mime })
   }
 
   async function fetchAndResizeProductBlob(url) {
     const r = await fetch(url)
-    if(!r.ok) throw new Error('Failed to fetch product image')
+    if (!r.ok) throw new Error('Failed to fetch product image')
     const blob = await r.blob()
 
     return new Promise((resolve, reject) => {
@@ -163,13 +163,13 @@ export default function ImagineModal({ productImage, onClose }){
     })
   }
 
-  async function callAIStyleMirror(){
+  async function callAIStyleMirror() {
     const startTime = Date.now()
     try {
       setLoading(true)
       setResultImage(null)
 
-      if(!userImg || !imageSource) {
+      if (!userImg || !imageSource) {
         alert('Please capture or upload your photo first.')
         setLoading(false)
         return
@@ -185,7 +185,7 @@ export default function ImagineModal({ productImage, onClose }){
       const form = new FormData()
       form.append('image1', productBlob, 'product.jpg')
       form.append('image2', userBlob, 'person.jpg')
-      form.append('prompt',   `You are an expert AI photo editor specializing in realistic virtual try-ons and object replacement. Your task is to seamlessly integrate clothing from one person onto another.
+      form.append('prompt', `You are an expert AI photo editor specializing in realistic virtual try-ons and object replacement. Your task is to seamlessly integrate clothing from one person onto another.
 
 Input Images:
 
@@ -223,12 +223,15 @@ Seamless Blending: The transferred garment must blend flawlessly into the existi
 Output Requirements:
 The final generated image must be a high-resolution, photorealistic composite where the transferred garment appears to have been naturally worn by the person in the Subject Image, with no visual cues that indicate digital manipulation.`);
       console.log('📡 Sending request to backend...')
-      const resp = await fetch('http://localhost:4000/api/tryon', { 
-        method: 'POST', 
-        body: form 
+      const resp = await fetch('http://localhost:4000/api/tryon', {
+        method: 'POST',
+        body: form,
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('jwt') || localStorage.getItem('token') || localStorage.getItem('access_token')}`
+        }
       })
       console.log(`✅ Response received (${Date.now() - startTime}ms)`)
-      
+
       if (!resp.ok) {
         const txt = await resp.text()
         throw new Error(`Server error: ${resp.status} ${txt}`)
@@ -238,7 +241,7 @@ The final generated image must be a high-resolution, photorealistic composite wh
       console.log('🖼️ Processing image response...')
       const blob = await resp.blob()
       console.log(`✅ Blob created: ${blob.size} bytes (${Date.now() - startTime}ms)`)
-      
+
       const imageUrl = URL.createObjectURL(blob)
       console.log('✅ Blob URL created:', imageUrl)
 
@@ -246,11 +249,11 @@ The final generated image must be a high-resolution, photorealistic composite wh
       console.log('🎨 Resizing image for display...')
       const resized = await forceResizeImage(imageUrl)
       console.log(`✅ Image resized (${Date.now() - startTime}ms)`)
-      
+
       // Clean up blob URL
       URL.revokeObjectURL(imageUrl)
       console.log('🧹 Blob URL cleaned up')
-      
+
       setResultImage(resized)
       console.log(`🎉 Complete! Total time: ${Date.now() - startTime}ms`)
     } catch (err) {
@@ -291,8 +294,8 @@ The final generated image must be a high-resolution, photorealistic composite wh
     })
   }
 
-  function onDownloadResult(){
-    if(!resultImage) return
+  function onDownloadResult() {
+    if (!resultImage) return
     const a = document.createElement('a')
     a.href = resultImage
     a.download = `virtual-tryon-${Date.now()}.jpg`
@@ -335,7 +338,7 @@ The final generated image must be a high-resolution, photorealistic composite wh
             <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: 'white', margin: 0 }}>Virtual Try-On</h2>
             <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.9)', marginTop: '4px' }}>See how this product looks on you</p>
           </div>
-          <button 
+          <button
             onClick={() => { stopCamera(); onClose(); }}
             style={{
               background: 'rgba(255,255,255,0.2)',
@@ -375,11 +378,11 @@ The final generated image must be a high-resolution, photorealistic composite wh
                   <div>
                     {/* Camera View */}
                     <div style={{ position: 'relative', marginBottom: '16px' }}>
-                      <video 
-                        ref={videoRef} 
-                        autoPlay 
-                        playsInline 
-                        muted 
+                      <video
+                        ref={videoRef}
+                        autoPlay
+                        playsInline
+                        muted
                         style={{
                           display: streaming ? 'block' : 'none',
                           width: '100%',
@@ -396,7 +399,7 @@ The final generated image must be a high-resolution, photorealistic composite wh
                           left: '50%',
                           transform: 'translateX(-50%)'
                         }}>
-                          <button 
+                          <button
                             onClick={takeSnapshot}
                             style={{
                               background: '#ff3e6c',
@@ -419,7 +422,7 @@ The final generated image must be a high-resolution, photorealistic composite wh
                     {/* Upload Options */}
                     {!streaming && (
                       <div>
-                        <button 
+                        <button
                           onClick={startCamera}
                           style={{
                             width: '100%',
@@ -463,7 +466,7 @@ The final generated image must be a high-resolution, photorealistic composite wh
                     )}
 
                     {streaming && (
-                      <button 
+                      <button
                         onClick={stopCamera}
                         style={{
                           width: '100%',
@@ -483,9 +486,9 @@ The final generated image must be a high-resolution, photorealistic composite wh
                 ) : (
                   <div>
                     <div style={{ position: 'relative', marginBottom: '16px' }}>
-                      <img 
-                        src={userImg} 
-                        alt="Your photo" 
+                      <img
+                        src={userImg}
+                        alt="Your photo"
                         style={{
                           width: '100%',
                           borderRadius: '8px',
@@ -508,7 +511,7 @@ The final generated image must be a high-resolution, photorealistic composite wh
                         ✓ Ready
                       </div>
                     </div>
-                    <button 
+                    <button
                       onClick={() => { setUserImg(null); setImageSource(null); }}
                       style={{
                         width: '100%',
@@ -535,9 +538,9 @@ The final generated image must be a high-resolution, photorealistic composite wh
                 border: '1px solid #e5e7eb'
               }}>
                 <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '16px' }}>Product</h3>
-                <img 
-                  src={productImage} 
-                  alt="Product" 
+                <img
+                  src={productImage}
+                  alt="Product"
                   style={{
                     width: '100%',
                     borderRadius: '8px',
@@ -595,9 +598,9 @@ The final generated image must be a high-resolution, photorealistic composite wh
                 {resultImage && (
                   <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white', borderRadius: '8px', padding: '16px' }}>
-                      <img 
-                        src={resultImage} 
-                        alt="Try-on result" 
+                      <img
+                        src={resultImage}
+                        alt="Try-on result"
                         style={{
                           maxWidth: '100%',
                           maxHeight: '500px',
@@ -608,7 +611,7 @@ The final generated image must be a high-resolution, photorealistic composite wh
                         }}
                       />
                     </div>
-                    <button 
+                    <button
                       onClick={onDownloadResult}
                       style={{
                         width: '100%',
@@ -633,7 +636,7 @@ The final generated image must be a high-resolution, photorealistic composite wh
 
           {/* Action Buttons */}
           <div style={{ marginTop: '24px', display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
-            <button 
+            <button
               disabled={loading || !userImg}
               onClick={callAIStyleMirror}
               style={{
@@ -650,9 +653,9 @@ The final generated image must be a high-resolution, photorealistic composite wh
             >
               ✨ {loading ? 'Processing...' : 'Try It On with AI'}
             </button>
-            
+
             {resultImage && (
-              <button 
+              <button
                 onClick={() => { setUserImg(null); setImageSource(null); setResultImage(null); }}
                 style={{
                   background: 'white',
@@ -686,7 +689,7 @@ The final generated image must be a high-resolution, photorealistic composite wh
       </div>
 
       <canvas ref={canvasRef} style={{ display: 'none' }} />
-      
+
       <style>{`
         @keyframes spin {
           0% { transform: rotate(0deg); }
