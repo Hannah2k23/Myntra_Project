@@ -1,3 +1,4 @@
+// ProductPage.jsx
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import TryOnModal from "./TryOnModal";
@@ -5,45 +6,71 @@ import ImagineModal from "./ImagineModal";
 import "./styles.css";
 
 export default function ProductPage() {
-  const { id } = useParams();
+  const { id } = useParams(); // numeric product_id or SKU
   const [product, setProduct] = useState(null);
+  const [error, setError] = useState(null);
   const [showTry, setShowTry] = useState(false);
   const [showImagine, setShowImagine] = useState(false);
   const [selectedSize, setSelectedSize] = useState("");
 
   useEffect(() => {
-    fetch(`http://localhost:4000/api/products/${id}`)
-      .then((r) => r.json())
-      .then(setProduct);
+    let mounted = true;
+    setProduct(null);
+    setError(null);
+
+    fetch(`http://localhost:4000/api/products/${encodeURIComponent(id)}`)
+      .then((r) => {
+        if (!r.ok) throw new Error(`Fetch failed: ${r.status}`);
+        return r.json();
+      })
+      .then((data) => {
+        if (!mounted) return;
+        setProduct(data);
+      })
+      .catch((err) => {
+        console.error(err);
+        if (mounted) setError("Failed to load product.");
+      });
+
+    return () => { mounted = false; };
   }, [id]);
 
-  if (!product) return <div className="loading">Loading...</div>;
+  // Helper to handle image URLs
+  const getImageSrc = (img) => {
+    if (!img) return "/placeholder.png"; // fallback
+    if (/^https?:\/\//i.test(img)) return img; // absolute URL
+    return `http://localhost:4000${img}`; // relative backend path
+  };
+
+  if (error) return <div className="error">{error}</div>;
+  if (!product) return <div className="loading">Loading product...</div>;
 
   return (
     <div className="product-page">
       <div className="product-images">
         <img
-          //src={`http://localhost:4000${product.image}`}
-          src={product.image}
-          alt={product.title}
+          src={getImageSrc(product.image_url)}
+          alt={product.name}
           className="product-main-img"
+          onError={(e) => { e.currentTarget.src = "/placeholder.png"; }}
         />
-        {product.discountText && (
+        {product.discount_text && (
           <span className="discount-badge product-discount">
-            {product.discountText}
+            {product.discount_text}
           </span>
         )}
       </div>
 
       <div className="product-info">
         <h1 className="product-brand">{product.brand}</h1>
-        <h2 className="product-title">{product.title}</h2>
+        <h2 className="product-title">{product.name}</h2>
+
         <div className="price-row">
           <div className="price">₹{product.price}</div>
           <div className="mrp">
-            <span className="mrp-value">MRP ₹{product.mrp}</span>{" "}
+            <span className="mrp-value">MRP ₹{product.mrp}</span>
           </div>
-          <span className="discount">({product.discountText})</span>
+          <span className="discount">({product.discount_text})</span>
         </div>
 
         <div className="sizes">
@@ -74,15 +101,14 @@ export default function ProductPage() {
 
       {showTry && (
         <TryOnModal
-         productImage={product.image}
-          //productImage={`http://localhost:4000${product.image}`}
+          productImage={getImageSrc(product.image_url)}
           onClose={() => setShowTry(false)}
         />
       )}
+
       {showImagine && (
         <ImagineModal
-          productImage={product.image}
-          //productImage={`http://localhost:4000${product.image}`}
+          productImage={getImageSrc(product.image_url)}
           onClose={() => setShowImagine(false)}
         />
       )}

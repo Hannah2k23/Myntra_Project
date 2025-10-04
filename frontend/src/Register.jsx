@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, ShoppingBag, Sparkles, Shield, Zap, CheckCircle2 } from "lucide-react";
+import { Navigate } from "react-router-dom";
 
 const MyntraRegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);

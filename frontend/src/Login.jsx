@@ -38,6 +38,7 @@ const MyntraLoginPage = () => {
       } else {
         setSuccess("Login successful!");
         localStorage.setItem("token", data.token);
+        navigate("/");
       }
     } catch (err) {
       setError("Server error. Please try again later.");
