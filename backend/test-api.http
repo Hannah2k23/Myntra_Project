@@ -1,0 +1,82 @@
+### Test Database Connection
+GET http://localhost:4001/api/database/test-connection
+
+### Inspect Products Table
+GET http://localhost:4001/api/database/inspect-products
+
+### Test Product Recommendations
+POST http://localhost:4001/api/database/test-recommendations
+Content-Type: application/json
+
+{
+  "category": "top",
+  "materials": ["cotton", "cotton blend"],
+  "budget": { "min": 500, "max": 2000 },
+  "subcategories": ["t-shirt", "shirt"]
+}
+
+### Test Complementary Products
+POST http://localhost:4001/api/database/test-complementary
+Content-Type: application/json
+
+{
+  "uploadedCategory": "top",
+  "materials": ["cotton"],
+  "budget": { "min": 500, "max": 2000 },
+  "styles": {
+    "bottom_wear": ["jeans", "pants"],
+    "footwear": ["sneakers", "shoes"],
+    "accessories": ["bag", "watch"]
+  }
+}
+
+### =====================================================
+### INTEGRATION TESTS - Weather Recommendations → SQL
+### =====================================================
+
+### Test Complete Flow: Weather Analysis → Product Recommendations
+POST http://localhost:4001/api/test/test-complete-flow
+Content-Type: application/json
+
+{
+  "tempC": 25,
+  "category": "top",
+  "itemDescription": "crop top",
+  "budget": { "min": 500, "max": 2000 }
+}
+
+### Test Different Weather Scenarios
+GET http://localhost:4001/api/test/test-weather-scenarios
+
+### Test Cold Weather Scenario
+POST http://localhost:4001/api/test/test-complete-flow
+Content-Type: application/json
+
+{
+  "tempC": 8,
+  "category": "top", 
+  "itemDescription": "oversized hoodie",
+  "budget": { "min": 1000, "max": 3000 }
+}
+
+### Test Hot Weather Scenario  
+POST http://localhost:4001/api/test/test-complete-flow
+Content-Type: application/json
+
+{
+  "tempC": 35,
+  "category": "bottom",
+  "itemDescription": "shorts", 
+  "budget": { "min": 800, "max": 2500 }
+}
+
+### Test Skinny Jeans Scenario (Your Example)
+POST http://localhost:4001/api/test/test-complete-flow
+Content-Type: application/json
+
+{
+  "tempC": 22,
+  "category": "bottom",
+  "itemDescription": "skinny fit jeans",
+  "budget": { "min": 1200, "max": 2800 }
+}

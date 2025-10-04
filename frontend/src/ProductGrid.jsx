@@ -35,7 +35,8 @@ export default function ProductGrid({ filters }) {
             >
               <div className="card-img-wrap">
                 <img
-                  src={`http://localhost:4001${p.image}`}
+                  //src={`http://localhost:4000${p.image}`}
+                  src={p.image}
                   alt={p.title}
                   className="card-img"
                 />

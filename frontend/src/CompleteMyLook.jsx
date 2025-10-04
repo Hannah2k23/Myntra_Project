@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react'
 
 const getWeatherIcon = (category) => {
   switch(category) {
-    case 'very_cold': return '🥶';
-    case 'cool': return '😌';
-    case 'warm': return '😊';
-    case 'hot': return '🥵';
-    default: return '🌡️';
+    case 'very_cold': return '';
+    case 'cool': return '';
+    case 'warm': return '';
+    case 'hot': return '';
+    default: return '';
   }
 };
 
@@ -360,7 +360,7 @@ export default function CompleteMyLook() {
             
             {locationPermission === 'granted' && (
               <div className="location-granted">
-                <span className="location-status">✅ Location enabled</span>
+                <span className="location-status">Location enabled</span>
                 {formData.temp_c !== null ? (
                   <span className="temp-display">Current temp: {Math.round(formData.temp_c)}°C</span>
                 ) : (
@@ -397,12 +397,20 @@ export default function CompleteMyLook() {
         </div>
       </form>
 
+      {/* Loading State */}
+      {isAnalyzing && (
+        <div className="loading">
+          <div className="spinner"></div>
+          <p>Analyzing your style and finding perfect matches...</p>
+        </div>
+      )}
+
       {/* Analysis Results */}
       {analysisResult && (
         <div className="analysis-results">
           <h2 className="results-title">Your Style Analysis</h2>
 
-          {/* Weather Recommendations Section - ADD THIS ENTIRE SECTION */}
+          {/* Weather Recommendations Section */}
           {analysisResult.analysis.weather_recommendations && (
             <div className="weather-recommendations-section">
               <h3 className="section-title">
@@ -530,6 +538,93 @@ export default function CompleteMyLook() {
               </div>
             </div>
           )}
+
+          {/* Color-Matched Products Section */}
+          {analysisResult.product_recommendations?.color_matched_products && 
+           Object.keys(analysisResult.product_recommendations.color_matched_products).length > 0 && (
+            <div className="color-matched-products-section">
+              <h3 className="section-title">
+                Color-Matched Recommendations
+                <span className="subtitle">Products that perfectly complement your item's colors</span>
+              </h3>
+              
+              <div className="color-matched-grid">
+                {Object.entries(analysisResult.product_recommendations.color_matched_products).map(([categoryKey, products]) => (
+                  <div key={categoryKey} className="color-matched-category">
+                    <h4 className="category-title">
+                      {categoryKey === 'upper_wear' ? 'Upper Wear' : 
+                       categoryKey === 'bottom_wear' ? 'Bottom Wear' :
+                       categoryKey.charAt(0).toUpperCase() + categoryKey.slice(1)}
+                    </h4>
+                    
+                    <div className="products-row">
+                      {products.map((product, index) => (
+                        <div key={product.product_id} className="color-matched-product">
+                          <div className="product-image-container">
+                            <img 
+                              src={product.image_url} 
+                              alt={product.name}
+                              className="product-image"
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'flex';
+                              }}
+                            />
+                            <div className="image-fallback" style={{display: 'none'}}>
+                              <span>No Image</span>
+                            </div>
+                            <div className="color-similarity-badge">
+                              {Math.round(product.color_similarity)}% match
+                            </div>
+                          </div>
+                          
+                          <div className="product-info">
+                            <h5 className="product-name">{product.name}</h5>
+                            <p className="product-brand">{product.brand}</p>
+                            <div className="product-price">
+                              <span className="price">₹{product.price}</span>
+                              {product.mrp && product.mrp > product.price && (
+                                <span className="mrp">₹{product.mrp}</span>
+                              )}
+                            </div>
+                            
+                            {product.rating && (
+                              <div className="product-rating">
+                                <span className="rating">★ {product.rating}</span>
+                                {product.rating_count && (
+                                  <span className="rating-count">({product.rating_count})</span>
+                                )}
+                              </div>
+                            )}
+                            
+                            <div className="color-match-info">
+                              <span className="matched-color" 
+                                    style={{ 
+                                      backgroundColor: product.matched_extracted_color?.hex || product.hex_color || '#ccc' 
+                                    }}>
+                              </span>
+                              <span className="match-text">Color Match</span>
+                            </div>
+                          </div>
+                          
+                          <button className="shop-now-btn">
+                            Shop Now
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="color-matched-info">
+                <p className="info-text">
+                  These products are selected based on color harmony with your uploaded item. 
+                  The percentage shows how closely each product's color matches your item's palette.
+                </p>
+              </div>
+            </div>
+          )}
           
           {/* Color Analysis Section */}
           {analysisResult.analysis.color_analysis && (
@@ -589,7 +684,3 @@ export default function CompleteMyLook() {
     </div>
   )
 }
-
-
-
-// export default CompleteMyLook;

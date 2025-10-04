@@ -23,7 +23,8 @@ export default function ProductPage() {
     <div className="product-page">
       <div className="product-images">
         <img
-          src={`http://localhost:4000${product.image}`}
+          //src={`http://localhost:4000${product.image}`}
+          src={product.image}
           alt={product.title}
           className="product-main-img"
         />
@@ -73,13 +74,15 @@ export default function ProductPage() {
 
       {showTry && (
         <TryOnModal
-          productImage={`http://localhost:4000${product.image}`}
+         productImage={product.image}
+          //productImage={`http://localhost:4000${product.image}`}
           onClose={() => setShowTry(false)}
         />
       )}
       {showImagine && (
         <ImagineModal
-          productImage={`http://localhost:4000${product.image}`}
+          productImage={product.image}
+          //productImage={`http://localhost:4000${product.image}`}
           onClose={() => setShowImagine(false)}
         />
       )}

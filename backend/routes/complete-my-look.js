@@ -5,6 +5,12 @@ const fs = require('fs');
 const { PythonShell } = require('python-shell');
 const sharp = require('sharp');
 const { getWeatherBasedRecommendations } = require('../utils/weatherRecommendations');
+const { 
+  getRecommendedProducts, 
+  getComplementaryProducts, 
+  getColorCompatibleProducts,
+  getColorMatchedComplementaryProducts
+} = require('../controllers/productRecommendations');
 
 const router = express.Router();
 
@@ -124,7 +130,81 @@ router.post('/', async (req, res) => {
         
         console.log(`[${sessionId}] Segmentation completed successfully`);
         
-        // Return segmentation results with color analysis
+        // Get product recommendations based on analysis
+        let productRecommendations = null;
+        let complementaryProducts = null;
+        let colorCompatibleProducts = null;
+        let colorMatchedProducts = null;
+        
+        try {
+          if (weatherRecommendations) {
+            console.log('🛍️ Fetching product recommendations...');
+            
+            // Get products matching weather recommendations for user's uploaded category
+            productRecommendations = await getRecommendedProducts({
+              category: uploaded_category,
+              materials: weatherRecommendations.recommendations.materials,
+              budget: { min: min_price, max: max_price },
+              subcategories: weatherRecommendations.recommendations.styles || []
+            });
+            
+            console.log(`✅ Found ${productRecommendations.length} matching products`);
+            
+            // Get complementary products (other categories)
+            if (weatherRecommendations.recommendations.complementary_items) {
+              const complementaryCategories = ['top', 'bottom', 'footwear', 'accessory'];
+              const styles = weatherRecommendations.recommendations.complementary_items;
+              
+              complementaryProducts = await getComplementaryProducts({
+                uploadedCategory: uploaded_category,
+                complementaryCategories: complementaryCategories,
+                materials: weatherRecommendations.recommendations.materials,
+                budget: { min: min_price, max: max_price },
+                styles: styles
+              });
+              
+              console.log('✅ Fetched complementary products for other categories');
+            }
+          }
+          
+          // Get color-matched complementary products (NEW FEATURE)
+          if (segmentationResult.color_analysis && weatherRecommendations) {
+            console.log('🎨 Fetching color-matched complementary products...');
+            
+            // Extract 5 colors from color analysis (dominant + palette)
+            const extractedColors = [
+              segmentationResult.color_analysis.dominant_color,
+              ...(segmentationResult.color_analysis.palette || []).slice(0, 4)
+            ];
+            
+            colorMatchedProducts = await getColorMatchedComplementaryProducts({
+              uploadedCategory: uploaded_category,
+              extractedColors: extractedColors,
+              budget: { min: min_price, max: max_price },
+              weatherRecommendations: weatherRecommendations
+            });
+            
+            console.log('✅ Found color-matched complementary products');
+          }
+          
+          // Get general color-compatible products if color analysis is available
+          if (segmentationResult.color_analysis) {
+            console.log('🎨 Fetching general color-compatible products...');
+            
+            colorCompatibleProducts = await getColorCompatibleProducts({
+              dominantColor: segmentationResult.color_analysis.dominant_color.hex,
+              recommendedColors: segmentationResult.color_analysis.recommended_colors,
+              budget: { min: min_price, max: max_price }
+            });
+            
+            console.log(`✅ Found ${colorCompatibleProducts.length} general color-compatible products`);
+          }
+          
+        } catch (dbError) {
+          console.error('⚠️ Database error (continuing without product recommendations):', dbError);
+        }
+        
+        // Return segmentation results with color analysis and product recommendations
         const response = {
           success: true,
           session_id: sessionId,
@@ -143,6 +223,12 @@ router.post('/', async (req, res) => {
             },
             color_analysis: segmentationResult.color_analysis || null
           },
+          product_recommendations: {
+            matching_products: productRecommendations || [],
+            complementary_products: complementaryProducts || {},
+            color_matched_products: colorMatchedProducts || {},
+            color_compatible_products: colorCompatibleProducts || []
+          },
           files: {
             original: `/segmentation/outputs/${sessionId}/optimized_input.jpg`,
             mask: `/segmentation/outputs/${sessionId}/garment_mask.png`,
@@ -154,9 +240,9 @@ router.post('/', async (req, res) => {
           next_steps: [
             segmentationResult.color_analysis ? '✅ Color extraction completed' : '⏳ Color extraction',
             weatherRecommendations ? '✅ Weather-based material recommendations' : '⏳ Weather analysis',
-            'CLIP-based category classification', 
-            'Style compatibility analysis',
-            'Budget-filtered catalog search'
+            productRecommendations ? '✅ Product recommendations fetched' : '⏳ Product recommendations',
+            complementaryProducts ? '✅ Complementary items found' : '⏳ Complementary items',
+            colorCompatibleProducts ? '✅ Color-matching products found' : '⏳ Color-compatible products'
         ]
         };
         

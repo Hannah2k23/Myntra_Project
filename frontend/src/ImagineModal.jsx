@@ -12,6 +12,7 @@ export default function ImagineModal({ productImage, onClose }){
   // Consistent dimensions - portrait orientation like Myntra
   const TARGET_WIDTH = 512
   const TARGET_HEIGHT = 768
+  
 
   useEffect(() => {
     // cleanup on unmount: stop camera
