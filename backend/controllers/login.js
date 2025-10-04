@@ -1,19 +1,19 @@
+// backend/controllers/login.js
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { Pool } = require("pg");
-
-const pool = new Pool({
-  connectionString: process.env.POSTGRESQL_DB_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
 
 const loginUser = async (req, res) => {
   const { mobileOrEmail, password } = req.body;
 
   if (!mobileOrEmail || !password) {
     return res.status(400).json({ message: "Mobile/Email and Password are required" });
+  }
+
+  // get the pool initialized in server.js
+  const pool = req.app && req.app.locals && req.app.locals.pool;
+  if (!pool) {
+    console.error("Postgres pool not found on app.locals.pool");
+    return res.status(500).json({ message: "Database not configured" });
   }
 
   try {
@@ -38,7 +38,15 @@ const loginUser = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    res.status(200).json({ message: "Login successful", token });
+    // return token and (sanitized) user info if you want
+    const safeUser = {
+      id: user.id,
+      fullName: user.full_name,
+      email: user.email,
+      mobile: user.mobile,
+    };
+
+    res.status(200).json({ message: "Login successful", token, user: safeUser });
   } catch (error) {
     console.error("Error logging in user:", error);
     res.status(500).json({ message: "Internal server error" });

@@ -12,6 +12,7 @@ const completeMyLookRoutes = require("./routes/complete-my-look");
 const databaseTestRoutes = require("./routes/database-test");
 const integrationTestRoutes = require("./routes/test-integration");
 const productRoutes = require("./routes/productRoutes");
+const auth = require("./middlewares/auth");
 
 const app = express();
 app.use(cors());
@@ -38,8 +39,8 @@ app.use("/segmentation", express.static(path.join(__dirname, "segmentation")));
 // API Routes
 app.use("/api/products", productRoutes); 
 app.use("/api/auth", authRoutes);
-app.use("/api/tryon", tryonRoutes);
-app.use("/api/analyze", completeMyLookRoutes);
+app.use("/api/tryon",auth,tryonRoutes);
+app.use("/api/analyze", auth,completeMyLookRoutes);
 app.use("/api/database", databaseTestRoutes);
 app.use("/api/test", integrationTestRoutes);
 

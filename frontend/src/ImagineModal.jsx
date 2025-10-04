@@ -185,8 +185,43 @@ export default function ImagineModal({ productImage, onClose }){
       const form = new FormData()
       form.append('image1', productBlob, 'product.jpg')
       form.append('image2', userBlob, 'person.jpg')
-      form.append('prompt', 'Virtual try-on: Show the person wearing the product clothing item. The person should be wearing the exact clothing item from image1. Maintain the person\'s face and body pose from image2, but replace their clothing with the product from image1. High quality, realistic, natural lighting.')
+      form.append('prompt',   `You are an expert AI photo editor specializing in realistic virtual try-ons and object replacement. Your task is to seamlessly integrate clothing from one person onto another.
 
+Input Images:
+
+Subject Image: This is the image featuring the person whose clothing will be replaced.
+
+Garment Reference Image: This image contains the specific piece of clothing that will be digitally transferred.
+
+Core Action - Garment Transfer:
+Identify the primary piece of upper body clothing (e.g., shirt, top, blouse, jacket, dress bodice) worn by the individual in the Subject Image. Precisely remove this garment. Subsequently, take the most prominent upper body garment from the Garment Reference Image and apply it to the person in the Subject Image.
+
+Critical Style & Fit Replication:
+
+Exact Garment Replication: The transferred garment must be an identical replica of the one in the Garment Reference Image in terms of its color, pattern, texture, embroidery, and any unique design details (e.g., collar type, neckline, button placement, embellishments).
+
+Realistic Fit and Drape: The garment must conform naturally to the body shape of the individual in the Subject Image. Simulate realistic folds, wrinkles, and stretching of the fabric, consistent with how that specific material would behave on a human body in that pose.
+
+Style Preservation: Crucially, preserve the wearing style from the Garment Reference Image. This includes:
+
+Sleeve length and style: If the reference garment has short, long, or three-quarter sleeves, ensure the transferred garment reflects this.
+
+Hemline and tuck: If the reference garment is tucked in, untucked, cropped, or has a specific peplum or layered hem, replicate this on the subject.
+
+Overall silhouette: Maintain the original volume and shape of the garment (e.g., fitted, loose, A-line, boxy) as seen in the Garment Reference Image.
+
+Strict Preservation Rules (Non-Negotiables):
+
+Subject's Identity & Appearance: Do NOT alter the face, hair, skin tone, facial expression, posture, or any other physical characteristics of the person in the Subject Image.
+
+Subject's Other Attire: Any clothing not specified for replacement (e.g., pants, skirt, shoes, accessories like watches or earrings) in the Subject Image must remain completely unchanged and perfectly integrated with the new upper garment.
+
+Background and Environment: The entire background, lighting conditions, shadows, reflections, and overall atmosphere of the Subject Image must be preserved without any modifications or artifacts from the transfer process.
+
+Seamless Blending: The transferred garment must blend flawlessly into the existing lighting and shadow environment of the Subject Image, ensuring a cohesive and photorealistic final appearance.
+
+Output Requirements:
+The final generated image must be a high-resolution, photorealistic composite where the transferred garment appears to have been naturally worn by the person in the Subject Image, with no visual cues that indicate digital manipulation.`);
       console.log('📡 Sending request to backend...')
       const resp = await fetch('http://localhost:4000/api/tryon', { 
         method: 'POST', 

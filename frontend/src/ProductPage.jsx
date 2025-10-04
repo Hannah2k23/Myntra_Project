@@ -89,9 +89,20 @@ export default function ProductPage() {
         </div>
 
         <div className="actions">
-          <button className="btn pink" onClick={() => setShowImagine(true)}>
+          <button
+            className="btn pink"
+            onClick={() => {
+              const token = localStorage.getItem("token");
+              if (!token) {
+                alert("Please log in first to use StyleMirror!");
+                return;
+              }
+              setShowImagine(true);
+            }}
+          >
             StyleMirror
           </button>
+
           <button className="btn" onClick={() => setShowTry(true)}>
             Try On
           </button>

@@ -1,22 +1,25 @@
 const jwt = require("jsonwebtoken");
 
-/**
- * Middleware to authenticate requests using JWT.
- */
-const authenticate = (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1]; // Extract token from "Bearer <token>"
+const auth = (req, res, next) => {
+  const authHeader = req.headers.authorization;
 
-  if (!token) {
-    return res.status(401).json({ message: "Unauthorized: No token provided" });
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "Authorization header missing or malformed" });
   }
+
+  const token = authHeader.split(" ")[1];
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // Attach decoded token to the request object
+    req.user = decoded; // attach user payload
     next();
-  } catch (err) {
-    return res.status(401).json({ message: "Unauthorized: Invalid token" });
+  } catch (error) {
+    console.error("Auth middleware error:", error.message);
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({ message: "Token expired" });
+    }
+    return res.status(401).json({ message: "Invalid token" });
   }
 };
 
-module.exports = authenticate;
+module.exports = auth;

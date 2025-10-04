@@ -10,7 +10,6 @@ async function getProducts(req, res) {
              image_url, model_3d_url, created_at
       FROM products
       ORDER BY popularity_score DESC NULLS LAST, created_at DESC
-      LIMIT 50
     `);
 
     const mapped = rows.map(r => ({
