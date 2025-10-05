@@ -358,10 +358,10 @@ const getColorMatchedComplementaryProducts = async (params) => {
       let dbCategory;
       switch(categoryKey.toLowerCase()) {
         case 'upper_wear':
-          dbCategory = 'top';
+          dbCategory = 'upper wear';
           break;
         case 'bottom_wear':
-          dbCategory = 'bottom';
+          dbCategory = 'bottom wear';
           break;
         case 'footwear':
           dbCategory = 'footwear';
@@ -376,12 +376,12 @@ const getColorMatchedComplementaryProducts = async (params) => {
       console.log(`\n🔍 Processing ${categoryKey} -> ${dbCategory} category`);
       console.log(`   Styles for ${categoryKey}:`, categoryStyles);
         
-      // Get base products using weather recommendations - DON'T use subcategories filter
+      // Get base products using weather recommendations - USE subcategories filter to respect weather constraints
       const products = await getRecommendedProducts({
         category: dbCategory,
         materials: weatherRecommendations?.recommendations?.materials || [],
         budget: budget,
-        subcategories: [] // Don't filter by subcategories in SQL
+        subcategories: categoryStyles // Use weather-recommended subcategories to filter appropriately
       });
 
       console.log(`   Found ${products.length} base products for ${dbCategory}`);
@@ -402,9 +402,9 @@ const getColorMatchedComplementaryProducts = async (params) => {
         const top5Products = productsWithColorMatch
           .filter(p => p.color_similarity > 0) // Only include products with valid color matches
           .sort((a, b) => b.color_similarity - a.color_similarity)
-          .slice(0, 5);
+          .slice(0, 6);
 
-        console.log(`   ✅ Selected top 5 color-matched products for ${categoryKey}`);
+        console.log(`   ✅ Selected top 6 color-matched products for ${categoryKey}`);
         console.log(`   Color similarities: ${top5Products.map(p => `${p.color_similarity}%`).join(', ')}`);
 
         if (top5Products.length > 0) {

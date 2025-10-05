@@ -126,7 +126,7 @@ const getComplementaryItems = (tempC, userCategory, itemDescription) => {
     // Bottom wear suggestions based on description
     if (desc.includes('crop') || desc.includes('cropped')) {
       complementary.bottom_wear = tempC > 25 
-        ? ['palazzo pants', 'long skirt', 'high-waisted shorts', 'maxi skirt']
+        ? ['palazzo pants', 'long skirt', 'maxi skirt', 'culottes']
         : ['high-waisted jeans', 'palazzo pants', 'long skirt', 'wide leg pants'];
     } else if (desc.includes('oversized') || desc.includes('loose')) {
       complementary.bottom_wear = tempC > 25
@@ -134,9 +134,9 @@ const getComplementaryItems = (tempC, userCategory, itemDescription) => {
         : ['skinny jeans', 'leggings', 'fitted pants', 'pencil skirt'];
     } else if (desc.includes('fitted') || desc.includes('tight') || desc.includes('bodycon')) {
       complementary.bottom_wear = tempC > 25
-        ? ['palazzo pants', 'wide leg shorts', 'flowy skirt', 'culottes']
+        ? ['palazzo pants', 'flowy skirt', 'culottes']
         : ['wide leg pants', 'palazzo pants', 'flowy skirt', 'culottes'];
-    } else if (desc.includes('formal') || desc.includes('shirt') || desc.includes('blouse')) {
+    } else if (desc.includes('formal') || desc.includes('shirt') || desc.includes('blouse') || desc.includes('top')) {
       complementary.bottom_wear = tempC > 25
         ? ['formal shorts', 'pencil skirt', 'culottes', 'straight pants']
         : ['formal pants', 'pencil skirt', 'straight leg trousers', 'midi skirt'];

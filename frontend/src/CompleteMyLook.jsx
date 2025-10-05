@@ -189,9 +189,12 @@ export default function CompleteMyLook() {
     }
 
     try {
-      const response = await fetch('http://localhost:4001/api/analyze', {
+      const response = await fetch('http://localhost:4000/api/analyze', {
         method: 'POST',
-        body: submitData
+        body: submitData,
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('jwt') || localStorage.getItem('token') || localStorage.getItem('access_token')}`
+        }
       })
       
       const result = await response.json()
