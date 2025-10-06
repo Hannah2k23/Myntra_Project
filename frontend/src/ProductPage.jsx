@@ -32,14 +32,15 @@ export default function ProductPage() {
         if (mounted) setError("Failed to load product.");
       });
 
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, [id]);
 
-  // Helper to handle image URLs
   const getImageSrc = (img) => {
-    if (!img) return "/placeholder.png"; // fallback
-    if (/^https?:\/\//i.test(img)) return img; // absolute URL
-    return `http://localhost:4000${img}`; // relative backend path
+    if (!img) return "/placeholder.png";
+    if (/^https?:\/\//i.test(img)) return img;
+    return `http://localhost:4000${img}`;
   };
 
   if (error) return <div className="error">{error}</div>;
@@ -52,7 +53,9 @@ export default function ProductPage() {
           src={getImageSrc(product.image_url)}
           alt={product.name}
           className="product-main-img"
-          onError={(e) => { e.currentTarget.src = "/placeholder.png"; }}
+          onError={(e) => {
+            e.currentTarget.src = "/placeholder.png";
+          }}
         />
         {product.discount_text && (
           <span className="discount-badge product-discount">
@@ -89,6 +92,7 @@ export default function ProductPage() {
         </div>
 
         <div className="actions">
+          {/* StyleMirror Button */}
           <button
             className="btn pink"
             onClick={() => {
@@ -103,20 +107,23 @@ export default function ProductPage() {
             StyleMirror
           </button>
 
+          {/* 3D Try On Button */}
           <button className="btn" onClick={() => setShowTry(true)}>
-            Try On
+            3-D Try On
           </button>
+
           <button className="btn outline">Add to Bag</button>
         </div>
       </div>
 
-      {showTry && (
-        <TryOnModal
-          productImage={getImageSrc(product.image_url)}
-          onClose={() => setShowTry(false)}
-        />
-      )}
+      {/* 3D Try On Modal */}
+      {showTry && (() => {
+        window.location.href = '/viewer.html';
+        return null;
+      })()}
 
+
+      {/* AI StyleMirror Modal */}
       {showImagine && (
         <ImagineModal
           productImage={getImageSrc(product.image_url)}

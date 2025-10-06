@@ -1,11 +1,11 @@
 ### Test Database Connection
-GET http://localhost:4001/api/database/test-connection
+GET http://localhost:4000/api/database/test-connection
 
 ### Inspect Products Table
-GET http://localhost:4001/api/database/inspect-products
+GET http://localhost:4000/api/database/inspect-products
 
 ### Test Product Recommendations
-POST http://localhost:4001/api/database/test-recommendations
+POST http://localhost:4000/api/database/test-recommendations
 Content-Type: application/json
 
 {
@@ -16,7 +16,7 @@ Content-Type: application/json
 }
 
 ### Test Complementary Products
-POST http://localhost:4001/api/database/test-complementary
+POST http://localhost:4000/api/database/test-complementary
 Content-Type: application/json
 
 {
@@ -35,7 +35,7 @@ Content-Type: application/json
 ### =====================================================
 
 ### Test Complete Flow: Weather Analysis → Product Recommendations
-POST http://localhost:4001/api/test/test-complete-flow
+POST http://localhost:4000/api/test/test-complete-flow
 Content-Type: application/json
 
 {
@@ -46,10 +46,10 @@ Content-Type: application/json
 }
 
 ### Test Different Weather Scenarios
-GET http://localhost:4001/api/test/test-weather-scenarios
+GET http://localhost:4000/api/test/test-weather-scenarios
 
 ### Test Cold Weather Scenario
-POST http://localhost:4001/api/test/test-complete-flow
+POST http://localhost:4000/api/test/test-complete-flow
 Content-Type: application/json
 
 {
@@ -60,7 +60,7 @@ Content-Type: application/json
 }
 
 ### Test Hot Weather Scenario  
-POST http://localhost:4001/api/test/test-complete-flow
+POST http://localhost:4000/api/test/test-complete-flow
 Content-Type: application/json
 
 {
@@ -71,7 +71,7 @@ Content-Type: application/json
 }
 
 ### Test Skinny Jeans Scenario (Your Example)
-POST http://localhost:4001/api/test/test-complete-flow
+POST http://localhost:4000/api/test/test-complete-flow
 Content-Type: application/json
 
 {

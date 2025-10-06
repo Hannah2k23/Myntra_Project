@@ -43,6 +43,7 @@ app.use("/api/tryon",auth,tryonRoutes);
 app.use("/api/analyze", auth,completeMyLookRoutes);
 app.use("/api/database", databaseTestRoutes);
 app.use("/api/test", integrationTestRoutes);
+app.use("/uploads", express.static("uploads"));
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () =>
