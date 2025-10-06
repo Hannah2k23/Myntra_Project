@@ -9,6 +9,7 @@ const { Pool } = require("pg");
 const tryonRoutes = require("./routes/tryon");
 const authRoutes = require("./routes/auth");
 const completeMyLookRoutes = require("./routes/complete-my-look");
+const moodboardRoutes = require("./routes/moodboard");
 const databaseTestRoutes = require("./routes/database-test");
 const integrationTestRoutes = require("./routes/test-integration");
 const productRoutes = require("./routes/productRoutes");
@@ -41,6 +42,10 @@ app.use("/api/products", productRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/tryon",auth,tryonRoutes);
 app.use("/api/analyze", auth,completeMyLookRoutes);
+
+// Mood board routes with mixed auth requirements
+app.use("/api/moodboard", moodboardRoutes);
+
 app.use("/api/database", databaseTestRoutes);
 app.use("/api/test", integrationTestRoutes);
 app.use("/uploads", express.static("uploads"));

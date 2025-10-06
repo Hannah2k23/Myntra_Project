@@ -1,0 +1,1312 @@
+{
+  "success": true,
+  "session_id": "cml_1759771310677_geahnt",
+  "analysis": {
+    "uploaded_category": "top",
+    "item_description": "cropped top",
+    "price_range": {
+      "min": 100,
+      "max": 50000
+    },
+    "location": {
+      "lat": 25.430151812277234,
+      "lon": 81.7723347374982
+    },
+    "temperature": 26,
+    "weather_recommendations": {
+      "temperature": 26,
+      "weather_category": "warm",
+      "recommendations": {
+        "materials": [
+          "cotton",
+          "linen blend",
+          "viscose",
+          "rayon",
+          "modal"
+        ],
+        "styles": [
+          "t-shirt",
+          "polo shirt",
+          "light shirt",
+          "blouse",
+          "tank top"
+        ],
+        "features": [
+          "breathable",
+          "moisture-wicking",
+          "comfortable fit"
+        ],
+        "avoid": [
+          "wool",
+          "fleece",
+          "heavy materials"
+        ],
+        "complementary_items": {
+          "upper_wear": [],
+          "bottom_wear": [
+            "palazzo pants",
+            "long skirt",
+            "maxi skirt",
+            "culottes"
+          ],
+          "footwear": [
+            "sneakers",
+            "loafers",
+            "casual shoes",
+            "flats"
+          ],
+          "accessories": [
+            "sunglasses",
+            "watch",
+            "bag",
+            "jewelry"
+          ]
+        }
+      }
+    },
+    "segmentation": {
+      "mask_area": 155928,
+      "crop_size": {
+        "width": 520,
+        "height": 538
+      },
+      "bbox": {
+        "x_min": 40,
+        "y_min": 134,
+        "x_max": 560,
+        "y_max": 672,
+        "width": 520,
+        "height": 538
+      },
+      "method": "simple_segmentation"
+    },
+    "color_analysis": {
+      "dominant_color": {
+        "rgb": [
+          164,
+          16,
+          26
+        ],
+        "hex": "#a4101a"
+      },
+      "palette": [
+        {
+          "rgb": [
+            164,
+            16,
+            26
+          ],
+          "hex": "#a4101a"
+        },
+        {
+          "rgb": [
+            231,
+            27,
+            60
+          ],
+          "hex": "#e71b3c"
+        },
+        {
+          "rgb": [
+            73,
+            27,
+            29
+          ],
+          "hex": "#491b1d"
+        },
+        {
+          "rgb": [
+            203,
+            140,
+            146
+          ],
+          "hex": "#cb8c92"
+        },
+        {
+          "rgb": [
+            183,
+            118,
+            119
+          ],
+          "hex": "#b77677"
+        }
+      ],
+      "recommended_colors": {
+        "lighter_shade": {
+          "rgb": [
+            244,
+            140,
+            147
+          ],
+          "hex": "#f48c93"
+        },
+        "darker_shade": {
+          "rgb": [
+            23,
+            2,
+            4
+          ],
+          "hex": "#170204"
+        },
+        "complementary": {
+          "rgb": [
+            91,
+            239,
+            229
+          ],
+          "hex": "#5befe5"
+        },
+        "neutral_black": {
+          "rgb": [
+            0,
+            0,
+            0
+          ],
+          "hex": "#000000"
+        },
+        "neutral_white": {
+          "rgb": [
+            255,
+            255,
+            255
+          ],
+          "hex": "#ffffff"
+        }
+      },
+      "masked_image_path": "C:\\Users\\user\\Myntra_Project\\backend\\segmentation\\outputs\\cml_1759771310677_geahnt\\masked_transparent.png"
+    }
+  },
+  "product_recommendations": {
+    "matching_products": [
+      {
+        "product_id": 7,
+        "name": "Example Red Tshirt - Lightweight",
+        "brand": "BrandX",
+        "price": "799.00",
+        "mrp": "1499.00",
+        "discount_text": "46% OFF",
+        "category": "top",
+        "sub_category": "t-shirt",
+        "material": "Cotton",
+        "occasion": "casual",
+        "image_url": "https://assets.myntassets.com/w_412,q_30,dpr_3,fl_progressive,f_webp/assets/images/2025/SEPTEMBER/5/bvcWza2M_401c8896145c4483acae5185493fe119.jpg",
+        "rating": 4.1,
+        "rating_count": 430,
+        "color": "Red",
+        "hex_color": "#FF0000",
+        "stock": 100,
+        "popularity_score": 0,
+        "created_at": "2025-10-03T13:10:24.766Z"
+      }
+    ],
+    "complementary_products": {
+      "bottom": [],
+      "footwear": [
+        {
+          "product_id": 21,
+          "name": "Aadi Chelsea Boots",
+          "brand": "Aadi",
+          "price": "525.00",
+          "mrp": "599.00",
+          "discount_text": "12% Off",
+          "category": "Footwear",
+          "sub_category": "casual shoes",
+          "material": "Leather",
+          "occasion": "casual",
+          "image_url": "https://m.media-amazon.com/images/I/71A-T7rYeGL._UY1000_.jpg",
+          "rating": 4,
+          "rating_count": 100,
+          "color": "Black",
+          "hex_color": "#000000",
+          "stock": 60,
+          "popularity_score": 0,
+          "created_at": "2025-10-03T13:42:22.390Z"
+        },
+        {
+          "product_id": 53,
+          "name": "Women Pink Open Toe Flats",
+          "brand": "Mochi",
+          "price": "749.00",
+          "mrp": "999.00",
+          "discount_text": "25% Off",
+          "category": "Footwear",
+          "sub_category": "flats",
+          "material": "Synthetic",
+          "occasion": "casual",
+          "image_url": "https://assets.myntassets.com/h_1440,q_75,w_1080/v1/assets/images/21265042/2023/11/27/5ef9debd-e410-40a5-aff9-13826f3bd1c21701080631570-Mochi-Women-Pink-Embellished-Open-Toe-Flats-8831701080631480-6.jpg",
+          "rating": 4.1,
+          "rating_count": 210,
+          "color": "Light Pink",
+          "hex_color": "#F8D1D0",
+          "stock": 85,
+          "popularity_score": 0,
+          "created_at": "2025-10-04T03:19:06.229Z"
+        },
+        {
+          "product_id": 54,
+          "name": "Women Black Open Toe Flats",
+          "brand": "Mochi",
+          "price": "768.00",
+          "mrp": "1490.00",
+          "discount_text": "48% Off",
+          "category": "Footwear",
+          "sub_category": "flats",
+          "material": "Synthetic",
+          "occasion": "casual",
+          "image_url": "https://assets.myntassets.com/w_412,q_30,dpr_3,fl_progressive,f_webp/assets/images/20698698/2022/11/11/90789ad5-4deb-470a-b369-01230182b89a1668156455981MochiWomenBlackOpenToeFlats1.jpg",
+          "rating": 4.3,
+          "rating_count": 410,
+          "color": "Black",
+          "hex_color": "#000000",
+          "stock": 110,
+          "popularity_score": 0,
+          "created_at": "2025-10-04T03:19:06.229Z"
+        },
+        {
+          "product_id": 51,
+          "name": "Men Black Solid Casual Shoes",
+          "brand": "Snitch",
+          "price": "799.00",
+          "mrp": "999.00",
+          "discount_text": "20% Off",
+          "category": "Footwear",
+          "sub_category": "casual shoes",
+          "material": "Synthetic",
+          "occasion": "casual",
+          "image_url": "https://assets.myntassets.com/w_412,q_30,dpr_3,fl_progressive,f_webp/assets/images/2025/MAY/17/xDITbsbW_c51ed0af692546ef98d5c718e8756943.jpg",
+          "rating": 3.9,
+          "rating_count": 210,
+          "color": "Black",
+          "hex_color": "#000000",
+          "stock": 130,
+          "popularity_score": 0,
+          "created_at": "2025-10-04T03:19:06.229Z"
+        },
+        {
+          "product_id": 112,
+          "name": "Comfort Ballet Flats - Tan",
+          "brand": "TangoFeet",
+          "price": "899.00",
+          "mrp": "1099.00",
+          "discount_text": "18% Off",
+          "category": "Footwear",
+          "sub_category": "flats",
+          "material": "Synthetic",
+          "occasion": "casual",
+          "image_url": "https://m.media-amazon.com/images/I/61A4BGf5XRL._UY1000_.jpg",
+          "rating": 4.1,
+          "rating_count": 180,
+          "color": "Tan",
+          "hex_color": "#caa079",
+          "stock": 95,
+          "popularity_score": 0,
+          "created_at": "2025-10-04T14:39:37.329Z"
+        },
+        {
+          "product_id": 26,
+          "name": "Campus Women’s Twirl Sneakers",
+          "brand": "Campus",
+          "price": "915.00",
+          "mrp": "1050.00",
+          "discount_text": "13% Off",
+          "category": "Footwear",
+          "sub_category": "sneakers",
+          "material": "Synthetic",
+          "occasion": "casual",
+          "image_url": "https://www.campusshoes.com/cdn/shop/files/TWIRL_22L-970_BLK_WHT_5.webp?v=1757585521",
+          "rating": 4.6,
+          "rating_count": 243,
+          "color": "Black",
+          "hex_color": "#000000",
+          "stock": 180,
+          "popularity_score": 0,
+          "created_at": "2025-10-03T13:42:22.390Z"
+        },
+        {
+          "product_id": 114,
+          "name": "White Slip-On Flats",
+          "brand": "TOMS",
+          "price": "1099.00",
+          "mrp": "1399.00",
+          "discount_text": "21% Off",
+          "category": "Footwear",
+          "sub_category": "flats",
+          "material": "Textile",
+          "occasion": "casual",
+          "image_url": "https://imagescdn.pantaloons.com/img/app/product/5/537380-4184182.jpg?auto=format&w=450",
+          "rating": 4,
+          "rating_count": 150,
+          "color": "White",
+          "hex_color": "#FFFFFF",
+          "stock": 110,
+          "popularity_score": 0,
+          "created_at": "2025-10-04T14:39:37.329Z"
+        },
+        {
+          "product_id": 55,
+          "name": "Women White Flats",
+          "brand": "Metro",
+          "price": "1143.00",
+          "mrp": "1399.00",
+          "discount_text": "18% Off",
+          "category": "Footwear",
+          "sub_category": "flats",
+          "material": "Synthetic",
+          "occasion": "casual",
+          "image_url": "https://kxadmin.metroshoes.com/product/41-4634-16-36/1200/41-4634H16.jpg",
+          "rating": 4,
+          "rating_count": 60,
+          "color": "White",
+          "hex_color": "#FFFFFF",
+          "stock": 95,
+          "popularity_score": 0,
+          "created_at": "2025-10-04T03:19:06.229Z"
+        },
+        {
+          "product_id": 45,
+          "name": "Women Black Casual Sneakers",
+          "brand": "Bootco",
+          "price": "1199.00",
+          "mrp": "1499.00",
+          "discount_text": "20% Off",
+          "category": "Footwear",
+          "sub_category": "sneakers",
+          "material": "Synthetic",
+          "occasion": "casual",
+          "image_url": "https://m.media-amazon.com/images/I/719ZiOECuEL._UY1000_.jpg",
+          "rating": 4,
+          "rating_count": 85,
+          "color": "Black",
+          "hex_color": "#000000",
+          "stock": 120,
+          "popularity_score": 0,
+          "created_at": "2025-10-04T03:19:06.229Z"
+        },
+        {
+          "product_id": 48,
+          "name": "Women Black Textured Slip-On Loafers",
+          "brand": "El Paso",
+          "price": "1199.00",
+          "mrp": "1499.00",
+          "discount_text": "20% Off",
+          "category": "Footwear",
+          "sub_category": "loafers",
+          "material": "Synthetic",
+          "occasion": "casual",
+          "image_url": "https://elpaso.in/cdn/shop/files/1.1_73be768d-ae00-4023-b6f9-9f3a160ad6a7.jpg?v=1721394400",
+          "rating": 4,
+          "rating_count": 60,
+          "color": "Black",
+          "hex_color": "#000000",
+          "stock": 110,
+          "popularity_score": 0,
+          "created_at": "2025-10-04T03:19:06.229Z"
+        },
+        {
+          "product_id": 113,
+          "name": "Black Slingback Flats",
+          "brand": "Clarks Originals",
+          "price": "1299.00",
+          "mrp": "1599.00",
+          "discount_text": "19% Off",
+          "category": "Footwear",
+          "sub_category": "flats",
+          "material": "Leather",
+          "occasion": "casual",
+          "image_url": "https://m.media-amazon.com/images/I/61T0Q2P9-qL._UY1000_.jpg",
+          "rating": 4.2,
+          "rating_count": 240,
+          "color": "Black",
+          "hex_color": "#000000",
+          "stock": 100,
+          "popularity_score": 0,
+          "created_at": "2025-10-04T14:39:37.329Z"
+        },
+        {
+          "product_id": 50,
+          "name": "Women Pink Casual Shoes",
+          "brand": "SZN",
+          "price": "1299.00",
+          "mrp": "1599.00",
+          "discount_text": "19% Off",
+          "category": "Footwear",
+          "sub_category": "casual shoes",
+          "material": "Textile",
+          "occasion": "casual",
+          "image_url": "https://5.imimg.com/data5/SELLER/Default/2024/2/388109679/KD/RW/IM/191598339/3402-pnk-1-500x500.jpg",
+          "rating": 4,
+          "rating_count": 120,
+          "color": "Light Pink",
+          "hex_color": "#F8D1D0",
+          "stock": 90,
+          "popularity_score": 0,
+          "created_at": "2025-10-04T03:19:06.229Z"
+        }
+      ],
+      "accessory": []
+    },
+    "color_matched_products": {
+      "bottom_wear": [
+        {
+          "product_id": 216,
+          "name": "Black Cotton Culottes",
+          "brand": "CityForm",
+          "price": "1199.00",
+          "mrp": "1499.00",
+          "discount_text": "20% Off",
+          "category": "Bottom Wear",
+          "sub_category": "culottes",
+          "material": "Cotton",
+          "occasion": "casual",
+          "image_url": "https://fabnest.co.in/cdn/shop/products/6_89b334d4-50d2-4856-828d-468825601a4b_2400x.jpg?v=1658857128",
+          "rating": 4.2,
+          "rating_count": 102,
+          "color": "Black",
+          "hex_color": "#000000",
+          "stock": 96,
+          "popularity_score": 0,
+          "created_at": "2025-10-05T05:00:52.416Z",
+          "color_similarity": 81.19,
+          "color_distance": 83.06021911842033,
+          "matched_extracted_color": {
+            "rgb": [
+              73,
+              27,
+              29
+            ],
+            "hex": "#491b1d"
+          }
+        },
+        {
+          "product_id": 219,
+          "name": "Black Rayon Culottes",
+          "brand": "DrapeLine",
+          "price": "1249.00",
+          "mrp": "1599.00",
+          "discount_text": "22% Off",
+          "category": "Bottom Wear",
+          "sub_category": "culottes",
+          "material": "Rayon",
+          "occasion": "casual",
+          "image_url": "https://www.jiomart.com/images/product/original/rvrpmqpyjo/popwings-women-solid-plain-mid-rise-casual-black-rayon-regular-fit-culottes-product-images-rvrpmqpyjo-0-202211241214.jpg?im=Resize=(1000,1000)",
+          "rating": 4,
+          "rating_count": 80,
+          "color": "Black",
+          "hex_color": "#000000",
+          "stock": 82,
+          "popularity_score": 0,
+          "created_at": "2025-10-05T05:00:52.416Z",
+          "color_similarity": 81.19,
+          "color_distance": 83.06021911842033,
+          "matched_extracted_color": {
+            "rgb": [
+              73,
+              27,
+              29
+            ],
+            "hex": "#491b1d"
+          }
+        },
+        {
+          "product_id": 222,
+          "name": "Black Linen-Blend Culottes",
+          "brand": "EarthTone",
+          "price": "1299.00",
+          "mrp": "1699.00",
+          "discount_text": "24% Off",
+          "category": "Bottom Wear",
+          "sub_category": "culottes",
+          "material": "Linen Blend",
+          "occasion": "casual",
+          "image_url": "https://xcdn.next.co.uk/common/items/default/default/itemimages/3_4Ratio/product/lge/Q57754s4.jpg?im=Resize,width=750",
+          "rating": 4.1,
+          "rating_count": 58,
+          "color": "Black",
+          "hex_color": "#000000",
+          "stock": 64,
+          "popularity_score": 0,
+          "created_at": "2025-10-05T05:00:52.416Z",
+          "color_similarity": 81.19,
+          "color_distance": 83.06021911842033,
+          "matched_extracted_color": {
+            "rgb": [
+              73,
+              27,
+              29
+            ],
+            "hex": "#491b1d"
+          }
+        },
+        {
+          "product_id": 189,
+          "name": "Black Cotton Palazzo Pants",
+          "brand": "StudioLinea",
+          "price": "1299.00",
+          "mrp": "1599.00",
+          "discount_text": "19% Off",
+          "category": "Bottom Wear",
+          "sub_category": "palazzo pants",
+          "material": "Cotton",
+          "occasion": "casual",
+          "image_url": "https://assets.myntassets.com/dpr_1.5,q_30,w_400,c_limit,fl_progressive/assets/images/10614644/2022/4/20/63374333-b436-4687-827d-3b6c5e1fae821650446668608JuniperWomenBlackHemDesignStraightLegPalazzos1.jpg",
+          "rating": 4,
+          "rating_count": 110,
+          "color": "Black",
+          "hex_color": "#000000",
+          "stock": 110,
+          "popularity_score": 0,
+          "created_at": "2025-10-05T05:00:52.416Z",
+          "color_similarity": 81.19,
+          "color_distance": 83.06021911842033,
+          "matched_extracted_color": {
+            "rgb": [
+              73,
+              27,
+              29
+            ],
+            "hex": "#491b1d"
+          }
+        },
+        {
+          "product_id": 192,
+          "name": "Black Rayon Palazzo Pants",
+          "brand": "VivaForma",
+          "price": "1399.00",
+          "mrp": "1799.00",
+          "discount_text": "22% Off",
+          "category": "Bottom Wear",
+          "sub_category": "palazzo pants",
+          "material": "Rayon",
+          "occasion": "casual",
+          "image_url": "https://thepajamafactory.in/cdn/shop/products/8_86bbb36e-0a1a-49bc-b6c8-a26ff616346d.jpg?v=1544940590",
+          "rating": 4.1,
+          "rating_count": 98,
+          "color": "Black",
+          "hex_color": "#000000",
+          "stock": 88,
+          "popularity_score": 0,
+          "created_at": "2025-10-05T05:00:52.416Z",
+          "color_similarity": 81.19,
+          "color_distance": 83.06021911842033,
+          "matched_extracted_color": {
+            "rgb": [
+              73,
+              27,
+              29
+            ],
+            "hex": "#491b1d"
+          }
+        },
+        {
+          "product_id": 195,
+          "name": "Black Linen-Blend Palazzo Pants",
+          "brand": "NaturalEase",
+          "price": "1499.00",
+          "mrp": "1999.00",
+          "discount_text": "25% Off",
+          "category": "Bottom Wear",
+          "sub_category": "palazzo pants",
+          "material": "Linen Blend",
+          "occasion": "casual",
+          "image_url": "https://m-commerce.countryroad.com/productimages_display/MAGNIFY/1/99472_466797_296417.jpg",
+          "rating": 4.2,
+          "rating_count": 72,
+          "color": "Black",
+          "hex_color": "#000000",
+          "stock": 65,
+          "popularity_score": 0,
+          "created_at": "2025-10-05T05:00:52.416Z",
+          "color_similarity": 81.19,
+          "color_distance": 83.06021911842033,
+          "matched_extracted_color": {
+            "rgb": [
+              73,
+              27,
+              29
+            ],
+            "hex": "#491b1d"
+          }
+        }
+      ],
+      "footwear": [
+        {
+          "product_id": 112,
+          "name": "Comfort Ballet Flats - Tan",
+          "brand": "TangoFeet",
+          "price": "899.00",
+          "mrp": "1099.00",
+          "discount_text": "18% Off",
+          "category": "Footwear",
+          "sub_category": "flats",
+          "material": "Synthetic",
+          "occasion": "casual",
+          "image_url": "https://m.media-amazon.com/images/I/61A4BGf5XRL._UY1000_.jpg",
+          "rating": 4.1,
+          "rating_count": 180,
+          "color": "Tan",
+          "hex_color": "#caa079",
+          "stock": 95,
+          "popularity_score": 0,
+          "created_at": "2025-10-04T14:39:37.329Z",
+          "color_similarity": 92.75,
+          "color_distance": 32.03123475609393,
+          "matched_extracted_color": {
+            "rgb": [
+              203,
+              140,
+              146
+            ],
+            "hex": "#cb8c92"
+          }
+        },
+        {
+          "product_id": 106,
+          "name": "Street Casual Slip-Ons - Tan",
+          "brand": "HarborWalk",
+          "price": "1499.00",
+          "mrp": "1899.00",
+          "discount_text": "21% Off",
+          "category": "Footwear",
+          "sub_category": "casual shoes",
+          "material": "Synthetic",
+          "occasion": "casual",
+          "image_url": "https://assets.ajio.com/medias/sys_master/root/20210617/pqx1/60ca4bfdf997ddb312cd1a74/-473Wx593H-460904126-tan-MODEL.jpg",
+          "rating": 4,
+          "rating_count": 160,
+          "color": "Tan",
+          "hex_color": "#caa079",
+          "stock": 90,
+          "popularity_score": 0,
+          "created_at": "2025-10-04T14:39:37.329Z",
+          "color_similarity": 92.75,
+          "color_distance": 32.03123475609393,
+          "matched_extracted_color": {
+            "rgb": [
+              203,
+              140,
+              146
+            ],
+            "hex": "#cb8c92"
+          }
+        },
+        {
+          "product_id": 103,
+          "name": "Waffle Runner Sneakers - Tan",
+          "brand": "Treadly",
+          "price": "2799.00",
+          "mrp": "3499.00",
+          "discount_text": "20% Off",
+          "category": "Footwear",
+          "sub_category": "sneakers",
+          "material": "Textile",
+          "occasion": "casual",
+          "image_url": "https://s1.dswcdn.com/uploads/Nike_Other_Shoes/Nike_Daybreak_SP_Vegas_Gold_College_Orange_Waffle_Racer_Running_Shoes_BV7725-710_P07.jpg",
+          "rating": 4.2,
+          "rating_count": 210,
+          "color": "Tan",
+          "hex_color": "#caa079",
+          "stock": 120,
+          "popularity_score": 0,
+          "created_at": "2025-10-04T14:39:37.329Z",
+          "color_similarity": 92.75,
+          "color_distance": 32.03123475609393,
+          "matched_extracted_color": {
+            "rgb": [
+              203,
+              140,
+              146
+            ],
+            "hex": "#cb8c92"
+          }
+        },
+        {
+          "product_id": 109,
+          "name": "Heritage Loafers - Tan",
+          "brand": "Barkers",
+          "price": "3499.00",
+          "mrp": "4299.00",
+          "discount_text": "18% Off",
+          "category": "Footwear",
+          "sub_category": "loafers",
+          "material": "Leather",
+          "occasion": "casual",
+          "image_url": "https://i.etsystatic.com/26817346/r/il/918cef/2921933626/il_570xN.2921933626_lada.jpg",
+          "rating": 4.3,
+          "rating_count": 95,
+          "color": "Tan",
+          "hex_color": "#caa079",
+          "stock": 70,
+          "popularity_score": 0,
+          "created_at": "2025-10-04T14:39:37.329Z",
+          "color_similarity": 92.75,
+          "color_distance": 32.03123475609393,
+          "matched_extracted_color": {
+            "rgb": [
+              203,
+              140,
+              146
+            ],
+            "hex": "#cb8c92"
+          }
+        },
+        {
+          "product_id": 172,
+          "name": "Ballet Flat - Dark Green",
+          "brand": "Rothy’s",
+          "price": "1699.00",
+          "mrp": "1999.00",
+          "discount_text": "15% Off",
+          "category": "Footwear",
+          "sub_category": "flats",
+          "material": "Knit",
+          "occasion": "casual",
+          "image_url": "https://i.ebayimg.com/images/g/qpUAAOSwDpxnqfyc/s-l1200.jpg",
+          "rating": 4.1,
+          "rating_count": 120,
+          "color": "Dark Green",
+          "hex_color": "#222b28",
+          "stock": 100,
+          "popularity_score": 0,
+          "created_at": "2025-10-05T05:00:20.786Z",
+          "color_similarity": 90.14,
+          "color_distance": 43.56604182158393,
+          "matched_extracted_color": {
+            "rgb": [
+              73,
+              27,
+              29
+            ],
+            "hex": "#491b1d"
+          }
+        },
+        {
+          "product_id": 166,
+          "name": "Retro Casual Lo Pro - Dark Green",
+          "brand": "CasualEdge",
+          "price": "2199.00",
+          "mrp": "2699.00",
+          "discount_text": "18% Off",
+          "category": "Footwear",
+          "sub_category": "casual shoes",
+          "material": "Leather",
+          "occasion": "casual",
+          "image_url": "https://i.pinimg.com/736x/dc/74/c0/dc74c047ec43583b2b46158e7615b854.jpg",
+          "rating": 4,
+          "rating_count": 140,
+          "color": "Dark Green",
+          "hex_color": "#222b28",
+          "stock": 90,
+          "popularity_score": 0,
+          "created_at": "2025-10-05T05:00:20.786Z",
+          "color_similarity": 90.14,
+          "color_distance": 43.56604182158393,
+          "matched_extracted_color": {
+            "rgb": [
+              73,
+              27,
+              29
+            ],
+            "hex": "#491b1d"
+          }
+        }
+      ],
+      "accessories": [
+        {
+          "product_id": 124,
+          "name": "Tan Stone Necklace (Gold Tone)",
+          "brand": "Amrapali",
+          "price": "129.00",
+          "mrp": "199.00",
+          "discount_text": "35% Off",
+          "category": "Accessories",
+          "sub_category": "jewelry",
+          "material": "Brass (gold-plated)",
+          "occasion": "casual",
+          "image_url": "https://tribe.blob.core.windows.net/tribe2018/catalog/00/24/24235_2_97cac6379e6b4a4fbbb608642f10b1a2.jpg",
+          "rating": 4,
+          "rating_count": 85,
+          "color": "Tan",
+          "hex_color": "#caa079",
+          "stock": 200,
+          "popularity_score": 0,
+          "created_at": "2025-10-04T15:14:26.657Z",
+          "color_similarity": 92.75,
+          "color_distance": 32.03123475609393,
+          "matched_extracted_color": {
+            "rgb": [
+              203,
+              140,
+              146
+            ],
+            "hex": "#cb8c92"
+          }
+        },
+        {
+          "product_id": 115,
+          "name": "Square Tan Sunglasses",
+          "brand": "Prada",
+          "price": "199.00",
+          "mrp": "249.00",
+          "discount_text": "20% Off",
+          "category": "Accessories",
+          "sub_category": "sunglasses",
+          "material": "Acetate",
+          "occasion": "casual",
+          "image_url": "https://assets.ajio.com/medias/sys_master/root/20220711/9DG6/62cc3995f997dd03e2c94d7a/-473Wx593H-464621493-brown-MODEL.jpg",
+          "rating": 4.3,
+          "rating_count": 120,
+          "color": "Tan",
+          "hex_color": "#caa079",
+          "stock": 80,
+          "popularity_score": 0,
+          "created_at": "2025-10-04T15:14:26.657Z",
+          "color_similarity": 92.75,
+          "color_distance": 32.03123475609393,
+          "matched_extracted_color": {
+            "rgb": [
+              203,
+              140,
+              146
+            ],
+            "hex": "#cb8c92"
+          }
+        },
+        {
+          "product_id": 118,
+          "name": "Tan Leather-Strap Watch",
+          "brand": "Bulova",
+          "price": "249.00",
+          "mrp": "349.00",
+          "discount_text": "29% Off",
+          "category": "Accessories",
+          "sub_category": "watch",
+          "material": "Leather",
+          "occasion": "casual",
+          "image_url": "https://www.thbaker.co.uk/pub/media/catalog/product/cache/e8812041c301388cf8cfa5724aae2db1/2/3/23-87-25124942_02_1.jpg",
+          "rating": 4.2,
+          "rating_count": 95,
+          "color": "Tan",
+          "hex_color": "#caa079",
+          "stock": 70,
+          "popularity_score": 0,
+          "created_at": "2025-10-04T15:14:26.657Z",
+          "color_similarity": 92.75,
+          "color_distance": 32.03123475609393,
+          "matched_extracted_color": {
+            "rgb": [
+              203,
+              140,
+              146
+            ],
+            "hex": "#cb8c92"
+          }
+        },
+        {
+          "product_id": 121,
+          "name": "Tan Pebbled Leather Hobo",
+          "brand": "Longchamp",
+          "price": "299.00",
+          "mrp": "399.00",
+          "discount_text": "25% Off",
+          "category": "Accessories",
+          "sub_category": "bag",
+          "material": "Leather",
+          "occasion": "casual",
+          "image_url": "https://cdn-images.farfetch-contents.com/30/21/29/70/30212970_59214153_600.jpg",
+          "rating": 4.2,
+          "rating_count": 160,
+          "color": "Tan",
+          "hex_color": "#caa079",
+          "stock": 90,
+          "popularity_score": 0,
+          "created_at": "2025-10-04T15:14:26.657Z",
+          "color_similarity": 92.75,
+          "color_distance": 32.03123475609393,
+          "matched_extracted_color": {
+            "rgb": [
+              203,
+              140,
+              146
+            ],
+            "hex": "#cb8c92"
+          }
+        },
+        {
+          "product_id": 20,
+          "name": "ADISA Bucket Cross Body Bag",
+          "brand": "ADISA",
+          "price": "799.00",
+          "mrp": "899.00",
+          "discount_text": "11% Off",
+          "category": "Accessories",
+          "sub_category": "bag",
+          "material": "Synthetic",
+          "occasion": "casual",
+          "image_url": "https://m.media-amazon.com/images/I/71htrLwlPjL._UY1000_.jpg",
+          "rating": 4,
+          "rating_count": 100,
+          "color": "Tan",
+          "hex_color": "#D2B48C",
+          "stock": 50,
+          "popularity_score": 0,
+          "created_at": "2025-10-03T13:42:22.390Z",
+          "color_similarity": 90.71,
+          "color_distance": 41.048751503547585,
+          "matched_extracted_color": {
+            "rgb": [
+              203,
+              140,
+              146
+            ],
+            "hex": "#cb8c92"
+          }
+        },
+        {
+          "product_id": 184,
+          "name": "Gold-tone Stone Pendant - Dark Green Accent",
+          "brand": "Mejuri",
+          "price": "129.00",
+          "mrp": "179.00",
+          "discount_text": "28% Off",
+          "category": "Accessories",
+          "sub_category": "jewelry",
+          "material": "Gold plated (brass)",
+          "occasion": "casual",
+          "image_url": "https://cdn.shopify.com/s/files/1/0631/8568/2616/files/2-LinkedGemstoneNecklace_GreenAventurine_14K_Solo_045_fb42a8f4-6e94-41bc-b8b5-2c975f0962f9.jpg?v=1749296486&width=4096&quality=95",
+          "rating": 4,
+          "rating_count": 65,
+          "color": "Dark Green",
+          "hex_color": "#222b28",
+          "stock": 140,
+          "popularity_score": 0,
+          "created_at": "2025-10-05T05:00:33.952Z",
+          "color_similarity": 90.14,
+          "color_distance": 43.56604182158393,
+          "matched_extracted_color": {
+            "rgb": [
+              73,
+              27,
+              29
+            ],
+            "hex": "#491b1d"
+          }
+        }
+      ]
+    },
+    "color_compatible_products": [
+      {
+        "product_id": 1,
+        "name": "Deshi Girl - Layered Net Mesh Fitted Top",
+        "brand": "Deshi Girl",
+        "price": "552.00",
+        "mrp": "2899.00",
+        "category": "top",
+        "sub_category": "fitted",
+        "material": "Net Mesh",
+        "image_url": "https://assets.myntassets.com/dpr_1.5,q_30,w_400,c_limit,fl_progressive/assets/images/2025/AUGUST/6/rv1yAsgN_e1fc5129b59b49189621506244bfe081.jpg",
+        "rating": 4.8,
+        "color": "Pink",
+        "hex_color": "#FFC0CB",
+        "occasion": "party"
+      },
+      {
+        "product_id": 13,
+        "name": "Nike - Air Max Running Shoes",
+        "brand": "Nike",
+        "price": "4999.00",
+        "mrp": "7999.00",
+        "category": "Footwear",
+        "sub_category": "sneakers",
+        "material": "Synthetic",
+        "image_url": "https://static.nike.com/a/images/t_PDP_144_v1/f_auto,q_auto:eco/d16d5396-b678-4c4b-8b71-4d9d591912e2/AIR+MAX+TL+2.5.png",
+        "rating": 4.7,
+        "color": "Black",
+        "hex_color": "#000000",
+        "occasion": "sports"
+      },
+      {
+        "product_id": 26,
+        "name": "Campus Women’s Twirl Sneakers",
+        "brand": "Campus",
+        "price": "915.00",
+        "mrp": "1050.00",
+        "category": "Footwear",
+        "sub_category": "sneakers",
+        "material": "Synthetic",
+        "image_url": "https://www.campusshoes.com/cdn/shop/files/TWIRL_22L-970_BLK_WHT_5.webp?v=1757585521",
+        "rating": 4.6,
+        "color": "Black",
+        "hex_color": "#000000",
+        "occasion": "casual"
+      },
+      {
+        "product_id": 4,
+        "name": "Fithub - Cuban Collar Shirt Style Top",
+        "brand": "FITHUB",
+        "price": "646.00",
+        "mrp": "1999.00",
+        "category": "top",
+        "sub_category": "shirt",
+        "material": "Cotton",
+        "image_url": "https://assets.ajio.com/medias/sys_master/root1/20250915/Iwfj/68c80b763d468c61abf3f230/-473Wx593H-702256482-offwhite-MODEL.jpg",
+        "rating": 4.5,
+        "color": "White",
+        "hex_color": "#FFFFFF",
+        "occasion": "casual"
+      },
+      {
+        "product_id": 14,
+        "name": "Adidas - Casual Lifestyle Sneakers",
+        "brand": "Adidas",
+        "price": "2999.00",
+        "mrp": "4999.00",
+        "category": "Footwear",
+        "sub_category": "sneakers",
+        "material": "Synthetic",
+        "image_url": "https://assets.adidas.com/images/e_trim:EAEEEF/c_lpad,w_iw,h_ih/b_rgb:EAEEEF/w_180,f_auto,q_auto,fl_lossy,c_fill,g_auto/f0d22c559ee34635b6bb3cb611e4beaf_9366/GRAND_COURT_2.0_SHOES_White_GW9204_HM1.jpg",
+        "rating": 4.5,
+        "color": "White",
+        "hex_color": "#FFFFFF",
+        "occasion": "casual"
+      },
+      {
+        "product_id": 116,
+        "name": "Classic Wayfarer Sunglasses - Black",
+        "brand": "Ray-Ban",
+        "price": "159.00",
+        "mrp": "199.00",
+        "category": "Accessories",
+        "sub_category": "sunglasses",
+        "material": "Acetate",
+        "image_url": "https://optorium.in/cdn/shop/files/RayBan_Sunglass_RB2140_1382R5_images_02_956386fe-036a-410a-aae1-5a12a5d4a04e.jpg?v=1754383624&width=1200",
+        "rating": 4.5,
+        "color": "Black",
+        "hex_color": "#000000",
+        "occasion": "casual"
+      },
+      {
+        "product_id": 9,
+        "name": "Denim Co - Skinny Fit Black Jeans",
+        "brand": "Denim Co",
+        "price": "899.00",
+        "mrp": "1999.00",
+        "category": "Bottom Wear",
+        "sub_category": "jeans",
+        "material": "Denim",
+        "image_url": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSVQRZYcJN8hM0BR5bufcwTaWFapRNQRuw3segiQ0BPXSoDp4fS",
+        "rating": 4.4,
+        "color": "Black",
+        "hex_color": "#000000",
+        "occasion": "casual"
+      },
+      {
+        "product_id": 17,
+        "name": "Classic Cotton - Formal White Shirt",
+        "brand": "Classic Cotton",
+        "price": "1299.00",
+        "mrp": "2199.00",
+        "category": "Upper wear",
+        "sub_category": "formal-shirt",
+        "material": "Cotton",
+        "image_url": "https://4.imimg.com/data4/JB/RE/MY-16694305/full-sleeve-shirts-250x250.jpg",
+        "rating": 4.4,
+        "color": "White",
+        "hex_color": "#FFFFFF",
+        "occasion": "formal"
+      },
+      {
+        "product_id": 122,
+        "name": "Black Pebbled Satchel",
+        "brand": "Michael Kors",
+        "price": "229.00",
+        "mrp": "329.00",
+        "category": "Accessories",
+        "sub_category": "bag",
+        "material": "Leather",
+        "image_url": "https://assets.ajio.com/medias/sys_master/root/20240404/1xuN/660ec27a16fd2c6e6a9d858e/-473Wx593H-410477116-001-MODEL.jpg",
+        "rating": 4.4,
+        "color": "Black",
+        "hex_color": "#000000",
+        "occasion": "casual"
+      },
+      {
+        "product_id": 182,
+        "name": "Black Sport Chronograph",
+        "brand": "Movado",
+        "price": "299.00",
+        "mrp": "399.00",
+        "category": "Accessories",
+        "sub_category": "watch",
+        "material": "Stainless Steel",
+        "image_url": "https://saicreationswatches.com/cdn/shop/files/MP000000005633259_1316Wx1468H_20190924215702.webp?v=1708841389&width=416",
+        "rating": 4.4,
+        "color": "Black",
+        "hex_color": "#000000",
+        "occasion": "casual"
+      },
+      {
+        "product_id": 179,
+        "name": "Structured Tote - Black",
+        "brand": "Furla",
+        "price": "299.00",
+        "mrp": "379.00",
+        "category": "Accessories",
+        "sub_category": "bag",
+        "material": "Leather",
+        "image_url": "https://img01.ztat.net/article/spp-media-p1/a23eae6c488d4409968663ecdca05bfb/d26c2dcc25934d0a80465ee123b705f6.jpg?imwidth=1800",
+        "rating": 4.4,
+        "color": "Black",
+        "hex_color": "#000000",
+        "occasion": "casual"
+      },
+      {
+        "product_id": 110,
+        "name": "Executive Slip-On Loafers - Black",
+        "brand": "Hush Puppies",
+        "price": "3999.00",
+        "mrp": "4999.00",
+        "category": "Footwear",
+        "sub_category": "loafers",
+        "material": "Leather",
+        "image_url": "https://baccabucci.com/cdn/shop/products/08-IMG_9131_3_-min.jpg?v=1663694554",
+        "rating": 4.4,
+        "color": "Black",
+        "hex_color": "#000000",
+        "occasion": "casual"
+      },
+      {
+        "product_id": 117,
+        "name": "Oversized White Frame Sunglasses",
+        "brand": "Tom Ford",
+        "price": "329.00",
+        "mrp": "399.00",
+        "category": "Accessories",
+        "sub_category": "sunglasses",
+        "material": "Acetate",
+        "image_url": "https://assets.myntassets.com/w_412,q_30,dpr_3,fl_progressive,f_webp/assets/images/2025/MARCH/21/UClTNq0G_8d0647c079f44d8cab61018acdc0070d.jpg",
+        "rating": 4.4,
+        "color": "White",
+        "hex_color": "#FFFFFF",
+        "occasion": "casual"
+      },
+      {
+        "product_id": 176,
+        "name": "Classic Wayfarer Sunglasses - Black",
+        "brand": "Persol",
+        "price": "169.00",
+        "mrp": "209.00",
+        "category": "Accessories",
+        "sub_category": "sunglasses",
+        "material": "Acetate",
+        "image_url": "https://www.careofcarl.com/bilder/artiklar/zoom/25042110_1.jpg?m=1684747652",
+        "rating": 4.4,
+        "color": "Black",
+        "hex_color": "#000000",
+        "occasion": "casual"
+      },
+      {
+        "product_id": 224,
+        "name": "Night Glide Sneakers - Black",
+        "brand": "Novus",
+        "price": "3199.00",
+        "mrp": "3799.00",
+        "category": "Footwear",
+        "sub_category": "sneakers",
+        "material": "Mesh/Textile",
+        "image_url": "https://image-cdn.hypb.st/https%3A%2F%2Fhypebeast.com%2Fimage%2F2025%2F04%2F23%2Fnike-nocta-glide-black-dm0879-002-release-info-1.jpg?q=75&w=800&cbr=1&fit=max",
+        "rating": 4.4,
+        "color": "Black",
+        "hex_color": "#000000",
+        "occasion": "casual"
+      },
+      {
+        "product_id": 239,
+        "name": "Black Structured Tote Bag",
+        "brand": "MetroBag",
+        "price": "299.00",
+        "mrp": "379.00",
+        "category": "Accessories",
+        "sub_category": "bag",
+        "material": "Leather",
+        "image_url": "https://accessorizelondon.in/cdn/shop/products/MA-10000458051_6.jpg?v=1705552645",
+        "rating": 4.4,
+        "color": "Black",
+        "hex_color": "#000000",
+        "occasion": "casual"
+      },
+      {
+        "product_id": 236,
+        "name": "Classic Black Wayfarer Sunglasses",
+        "brand": "ShadyCo",
+        "price": "179.00",
+        "mrp": "229.00",
+        "category": "Accessories",
+        "sub_category": "sunglasses",
+        "material": "Acetate",
+        "image_url": "https://shadygators.in/cdn/shop/files/IMG_9785copy.jpg?v=1736439643&width=2000",
+        "rating": 4.4,
+        "color": "Black",
+        "hex_color": "#000000",
+        "occasion": "casual"
+      },
+      {
+        "product_id": 242,
+        "name": "Black Chronograph Stainless Watch",
+        "brand": "ChronoLux",
+        "price": "299.00",
+        "mrp": "399.00",
+        "category": "Accessories",
+        "sub_category": "watch",
+        "material": "Stainless Steel",
+        "image_url": "https://images.squarespace-cdn.com/content/v1/5520715be4b0e0673a91d9fa/1436036276037-AM3GGSPMLTZPR6WBPU27/Schaumburg-watch-chonograph-black.jpg?format=1000w",
+        "rating": 4.4,
+        "color": "Black",
+        "hex_color": "#000000",
+        "occasion": "casual"
+      },
+      {
+        "product_id": 39,
+        "name": "DressBerry Cotton Embroidered Peplum Crop Top",
+        "brand": "DressBerry",
+        "price": "479.00",
+        "mrp": "599.00",
+        "category": "Upper wear",
+        "sub_category": "crop top",
+        "material": "Cotton",
+        "image_url": "https://assets.myntassets.com/h_1440,q_75,w_1080/v1/assets/images/2024/NOVEMBER/6/1NEpaIUn_ad7debb6cc494004b6fb5958834b2ade.jpg",
+        "rating": 4.4,
+        "color": "Light Pink",
+        "hex_color": "#F8D1D0",
+        "occasion": "casual"
+      },
+      {
+        "product_id": 193,
+        "name": "Aqua Linen-Blend Palazzo Pants",
+        "brand": "Linen & Co",
+        "price": "1499.00",
+        "mrp": "1999.00",
+        "category": "Bottom Wear",
+        "sub_category": "palazzo pants",
+        "material": "Linen Blend",
+        "image_url": "https://www.deionescu.com/cdn/shop/files/IMG_5936.jpg?v=1754216893",
+        "rating": 4.4,
+        "color": "Aqua",
+        "hex_color": "#5BEFE5",
+        "occasion": "casual"
+      }
+    ]
+  },
+  "files": {
+    "original": "/segmentation/outputs/cml_1759771310677_geahnt/optimized_input.jpg",
+    "mask": "/segmentation/outputs/cml_1759771310677_geahnt/garment_mask.png",
+    "crop": "/segmentation/outputs/cml_1759771310677_geahnt/garment_crop.jpg",
+    "masked_transparent": "/segmentation/outputs/cml_1759771310677_geahnt/masked_transparent.png"
+  },
+  "next_steps": [
+    "✅ Color extraction completed",
+    "✅ Weather-based material recommendations",
+    "✅ Product recommendations fetched",
+    "✅ Complementary items found",
+    "✅ Color-matching products found"
+  ]
+}

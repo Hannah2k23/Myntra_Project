@@ -1,6 +1,207 @@
 import React, { useState, useEffect } from 'react'
 const apiUrl = import.meta.env.VITE_BACKEND_URL
 
+// Mood Board Generator Component
+function MoodBoardGenerator({ sessionId, analysisResult }) {
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [moodBoard, setMoodBoard] = useState(null)
+  const [error, setError] = useState('')
+
+  const generateMoodBoard = async () => {
+    if (!sessionId) return
+    
+    setIsGenerating(true)
+    setError('')
+    
+    try {
+      console.log(`🚀 Making request to: http://localhost:4000/api/moodboard/generate/${sessionId}`)
+      console.log(`📝 Request body:`, { analysis_result: analysisResult })
+      
+      const response = await fetch(`http://localhost:4000/api/moodboard/generate/${sessionId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('jwt') || localStorage.getItem('token') || localStorage.getItem('access_token')}`
+        },
+        body: JSON.stringify({
+          analysis_result: analysisResult
+        })
+      })
+      
+      console.log(`📊 Response status:`, response.status)
+      console.log(`📊 Response headers:`, Object.fromEntries(response.headers.entries()))
+      
+      const result = await response.json()
+      console.log(`📥 Response result:`, result)
+      
+      if (response.ok) {
+        console.log(`✅ Success! Setting mood board:`, result.moodboard)
+        setMoodBoard(result.moodboard)
+        setError('')
+      } else {
+        console.log(`❌ Error response:`, result)
+        setError(result.message || 'Failed to generate mood board')
+      }
+    } catch (err) {
+      setError('Network error. Please try again.')
+      console.error('Mood board generation error:', err)
+    } finally {
+      setIsGenerating(false)
+    }
+  }
+
+  const copyShareLink = () => {
+    if (moodBoard?.share_url) {
+      navigator.clipboard.writeText(moodBoard.share_url)
+      // You could add a toast notification here
+      alert('Share link copied to clipboard! 📋')
+    }
+  }
+
+  return (
+    <div className="moodboard-generator">
+      <div className="moodboard-header">
+        <h3 className="section-title">Create Your Aesthetic Mood Board</h3>
+        <p className="moodboard-description">
+          Transform your style analysis into a stunning Pinterest-style mood board
+        </p>
+      </div>
+
+      {!moodBoard && !isGenerating && (
+        <div className="moodboard-cta">
+          <button
+            onClick={generateMoodBoard}
+            className="btn pink moodboard-btn"
+            disabled={isGenerating}
+          >
+            Generate My Vibe Board
+          </button>
+          <p className="moodboard-hint">
+            We'll combine your uploaded item with perfectly matched recommendations!
+          </p>
+        </div>
+      )}
+
+      {isGenerating && (
+        <div className="moodboard-loading">
+          <div className="loading-animation">
+            <div className="spinner mood-spinner"></div>
+            <div className="loading-text">
+              <p>Creating your aesthetic mood board...</p>
+              <small> Curating the perfect vibe </small>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {error && (
+        <div className="moodboard-error">
+          <p className="error-msg">{error}</p>
+          <button
+            onClick={generateMoodBoard}
+            className="btn outline retry-btn"
+          >
+            Try Again
+          </button>
+        </div>
+      )}
+
+      {moodBoard && (
+        <div className="moodboard-result">
+          <div className="moodboard-success">
+            <h4 className="success-title">Your Vibe Board is Ready!</h4>
+            <p className="success-subtitle">
+              Featuring {moodBoard.images_count} perfectly curated pieces
+            </p>
+          </div>
+          
+          <div className="moodboard-preview">
+            <div className="moodboard-image-container">
+              <img
+                src={`http://localhost:4000${moodBoard.url}`}
+                alt="Your Style Mood Board"
+                className="moodboard-image"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'flex';
+                }}
+              />
+              <div className="moodboard-fallback" style={{display: 'none'}}>
+                <p>Mood board not available</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="moodboard-actions">
+            <a
+              href={`http://localhost:4000${moodBoard.url}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn pink"
+            >
+              View Full Size
+            </a>
+            <button
+              onClick={copyShareLink}
+              className="btn outline share-btn"
+            >
+            Copy Share Link
+            </button>
+            <a
+              href={`http://localhost:4000${moodBoard.url}`}
+              download="my-vibe-board.jpg"
+              className="btn outline download-btn"
+            >
+              Download
+            </a>
+          </div>
+          
+          <div className="moodboard-social">
+            <p className="social-prompt">Share your aesthetic with the world!</p>
+            <div className="social-buttons">
+              <button 
+                onClick={() => {
+                  const text = encodeURIComponent('Check out my curated style mood board! #MyntraStyle #OOTD');
+                  const url = encodeURIComponent(moodBoard.share_url);
+                  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+                }}
+                className="social-btn twitter"
+              >
+                Twitter
+              </button>
+              <button
+                onClick={() => {
+                  const url = encodeURIComponent(moodBoard.share_url);
+                  window.open(`https://pinterest.com/pin/create/button/?url=${url}&description=My curated style mood board from Myntra!`, '_blank');
+                }}
+                className="social-btn pinterest"
+              >
+                Pinterest
+              </button>
+              <button
+                onClick={() => {
+                  if (navigator.share) {
+                    navigator.share({
+                      title: 'My Style Vibe Board',
+                      text: 'Check out my curated style mood board from Myntra!',
+                      url: moodBoard.share_url
+                    });
+                  } else {
+                    copyShareLink();
+                  }
+                }}
+                className="social-btn share"
+              >
+                Share
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 const getWeatherIcon = (category) => {
   switch(category) {
     case 'very_cold': return '';
@@ -413,6 +614,11 @@ export default function CompleteMyLook() {
       {analysisResult && (
         <div className="analysis-results">
           <h2 className="results-title">Your Style Analysis</h2>
+          
+          {/* Mood Board Generation Button */}
+          <div className="moodboard-section">
+            <MoodBoardGenerator sessionId={analysisResult.session_id} analysisResult={analysisResult} />
+          </div>
 
           {/* Weather Recommendations Section */}
           {analysisResult.analysis.weather_recommendations && (

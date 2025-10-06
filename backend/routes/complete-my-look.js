@@ -246,6 +246,11 @@ router.post('/', async (req, res) => {
         ]
         };
         
+        // Save analysis result for mood board generation
+        const analysisResultPath = path.join(outputDir, 'analysis_result.json');
+        fs.writeFileSync(analysisResultPath, JSON.stringify(response, null, 2));
+        console.log(`💾 Analysis result saved for mood board: ${analysisResultPath}`);
+        
         res.json(response);
         
       } catch (processingError) {
