@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./styles.css";
 
+const apiUrl = import.meta.env.VITE_BACKEND_URL
 export default function ProductGrid({ filters }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,8 +13,8 @@ export default function ProductGrid({ filters }) {
     let mounted = true;
     setLoading(true);
     setError(null);
-
-    fetch("http://localhost:4000/api/products")
+    console.log(`${apiUrl}`)
+    fetch(`${apiUrl}/api/products`)
       .then((r) => {
         if (!r.ok) throw new Error(`Fetch failed: ${r.status}`);
         return r.json();
@@ -39,7 +40,7 @@ export default function ProductGrid({ filters }) {
   const getImageSrc = (img) => {
     if (!img) return "/placeholder.png"; // fallback in public/
     if (/^https?:\/\//i.test(img)) return img; // absolute URL
-    return `http://localhost:4000${img}`; // relative path
+    return `${apiUrl}${img}`; // relative path
   };
 
   if (loading) return <div className="loading">Loading products...</div>;

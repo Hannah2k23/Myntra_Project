@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, ShoppingBag, Sparkles, Shield, Zap, CheckCircle2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+const apiUrl = import.meta.env.VITE_BACKEND_URL
 
 const MyntraRegisterPage = () => {
   const navigate = useNavigate();
@@ -45,7 +46,7 @@ const MyntraRegisterPage = () => {
     setSuccess("");
 
     try {
-      const response = await fetch("http://localhost:4000/api/auth/register", {
+      const response = await fetch(`${apiUrl}:4000/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...formData, wantsUpdates }),

@@ -8,6 +8,7 @@ export default function ImagineModal({ productImage, onClose }) {
   const [streaming, setStreaming] = useState(false)
   const [loading, setLoading] = useState(false)
   const [resultImage, setResultImage] = useState(null)
+  const apiUrl = import.meta.env.VITE_BACKEND_URL
 
   // Consistent dimensions - portrait orientation like Myntra
   const TARGET_WIDTH = 512
@@ -223,7 +224,7 @@ Seamless Blending: The transferred garment must blend flawlessly into the existi
 Output Requirements:
 The final generated image must be a high-resolution, photorealistic composite where the transferred garment appears to have been naturally worn by the person in the Subject Image, with no visual cues that indicate digital manipulation.`);
       console.log('📡 Sending request to backend...')
-      const resp = await fetch('http://localhost:4000/api/tryon', {
+      const resp = await fetch(`${apiUrl}/api/tryon`, {
         method: 'POST',
         body: form,
         headers: {

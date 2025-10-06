@@ -15,6 +15,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 
 const navLinks = ["Men", "Women", "Kids", "Home", "Beauty", "GenZ", "Studio"];
+const apiUrl = import.meta.env.VITE_BACKEND_URL
 
 export default function Header() {
   const location = useLocation();
@@ -43,7 +44,7 @@ export default function Header() {
       
       // Optional: call backend logout to invalidate token
       if (token) {
-        await fetch("http://localhost:4000/api/auth/logout", {
+        await fetch(`${apiUrl}/api/auth/logout`, {
           method: "POST",
           headers: { Authorization: `Bearer ${token}` },
         });

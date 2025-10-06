@@ -5,6 +5,7 @@ import TryOnModal from "./TryOnModal";
 import ImagineModal from "./ImagineModal";
 import "./styles.css";
 
+const apiUrl = import.meta.env.VITE_BACKEND_URL
 export default function ProductPage() {
   const { id } = useParams(); // numeric product_id or SKU
   const [product, setProduct] = useState(null);
@@ -18,7 +19,7 @@ export default function ProductPage() {
     setProduct(null);
     setError(null);
 
-    fetch(`http://localhost:4000/api/products/${encodeURIComponent(id)}`)
+    fetch(`${apiUrl}/api/products/${encodeURIComponent(id)}`)
       .then((r) => {
         if (!r.ok) throw new Error(`Fetch failed: ${r.status}`);
         return r.json();
@@ -40,7 +41,7 @@ export default function ProductPage() {
   const getImageSrc = (img) => {
     if (!img) return "/placeholder.png";
     if (/^https?:\/\//i.test(img)) return img;
-    return `http://localhost:4000${img}`;
+    return `${apiUrl}${img}`;
   };
 
   if (error) return <div className="error">{error}</div>;

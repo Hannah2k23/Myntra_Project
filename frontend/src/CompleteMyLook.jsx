@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+const apiUrl = import.meta.env.VITE_BACKEND_URL
 
 const getWeatherIcon = (category) => {
   switch(category) {
@@ -189,7 +190,7 @@ export default function CompleteMyLook() {
     }
 
     try {
-      const response = await fetch('http://localhost:4000/api/analyze', {
+      const response = await fetch(`${apiUrl}/api/analyze`, {
         method: 'POST',
         body: submitData,
         headers: {
