@@ -14,10 +14,10 @@ function MoodBoardGenerator({ sessionId, analysisResult }) {
     setError('')
     
     try {
-      console.log(`🚀 Making request to: http://localhost:4000/api/moodboard/generate/${sessionId}`)
+      console.log(`🚀 Making request to: ${apiUrl}/api/moodboard/generate/${sessionId}`)
       console.log(`📝 Request body:`, { analysis_result: analysisResult })
       
-      const response = await fetch(`http://localhost:4000/api/moodboard/generate/${sessionId}`, {
+      const response = await fetch(`${apiUrl}/api/moodboard/generate/${sessionId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -118,7 +118,7 @@ function MoodBoardGenerator({ sessionId, analysisResult }) {
           <div className="moodboard-preview">
             <div className="moodboard-image-container">
               <img
-                src={`http://localhost:4000${moodBoard.url}`}
+                src={`${apiUrl}${moodBoard.url}`}
                 alt="Your Style Mood Board"
                 className="moodboard-image"
                 onError={(e) => {
@@ -134,7 +134,7 @@ function MoodBoardGenerator({ sessionId, analysisResult }) {
           
           <div className="moodboard-actions">
             <a
-              href={`http://localhost:4000${moodBoard.url}`}
+              href={`${apiUrl}${moodBoard.url}`}
               target="_blank"
               rel="noopener noreferrer"
               className="btn pink"
@@ -148,7 +148,7 @@ function MoodBoardGenerator({ sessionId, analysisResult }) {
             Copy Share Link
             </button>
             <a
-              href={`http://localhost:4000${moodBoard.url}`}
+              href={`${apiUrl}${moodBoard.url}`}
               download="my-vibe-board.jpg"
               className="btn outline download-btn"
             >
